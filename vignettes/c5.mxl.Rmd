@@ -523,3 +523,5 @@ indpar <- merge(unique(subset(as.data.frame(RT),
 ggplot(indpar) + geom_density(aes(x = VSL, linetype = african)) + 
     scale_x_continuous(limits = c(200, 1200))
 ```
+
+## Bibliography
