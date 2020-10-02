@@ -12,11 +12,12 @@
 \alias{logLik.mlogit}
 \alias{summary.mlogit}
 \alias{print.summary.mlogit}
-\alias{index.mlogit}
 \alias{predict.mlogit}
 \alias{fitted.mlogit}
 \alias{coef.mlogit}
 \alias{coef.summary.mlogit}
+\alias{idx.mlogit}
+\alias{idx_name.mlogit}
 \title{Methods for mlogit objects}
 \usage{
 \method{residuals}{mlogit}(object, outcome = TRUE, ...)
@@ -31,26 +32,43 @@ model.response.mlogit(object, ...)
 
 \method{update}{mlogit}(object, new, ...)
 
-\method{print}{mlogit}(x, digits = max(3, getOption("digits") - 2),
-  width = getOption("width"), ...)
+\method{print}{mlogit}(
+  x,
+  digits = max(3, getOption("digits") - 2),
+  width = getOption("width"),
+  ...
+)
 
 \method{logLik}{mlogit}(object, ...)
 
 \method{summary}{mlogit}(object, ..., type = c("chol", "cov", "cor"))
 
-\method{print}{summary.mlogit}(x, digits = max(3, getOption("digits") -
-  2), width = getOption("width"), ...)
+\method{print}{summary.mlogit}(
+  x,
+  digits = max(3, getOption("digits") - 2),
+  width = getOption("width"),
+  ...
+)
 
-\method{index}{mlogit}(x, ...)
+\method{idx}{mlogit}(x, n = NULL, m = NULL)
 
-\method{predict}{mlogit}(object, newdata = NULL, returnData = FALSE,
-  ...)
+\method{idx_name}{mlogit}(x, n = NULL, m = NULL)
 
-\method{fitted}{mlogit}(object, type = c("outcome", "probabilities",
-  "linpred", "parameters"), outcome = NULL, ...)
+\method{predict}{mlogit}(object, newdata = NULL, returnData = FALSE, ...)
 
-\method{coef}{mlogit}(object, subset = c("all", "iv", "sig", "sd", "sp",
-  "chol"), fixed = FALSE, ...)
+\method{fitted}{mlogit}(
+  object,
+  type = c("outcome", "probabilities", "linpred", "parameters"),
+  outcome = NULL,
+  ...
+)
+
+\method{coef}{mlogit}(
+  object,
+  subset = c("all", "iv", "sig", "sd", "sp", "chol"),
+  fixed = FALSE,
+  ...
+)
 
 \method{coef}{summary.mlogit}(object, ...)
 }
@@ -78,6 +96,8 @@ parameters should be displayed : \code{"chol"} for the estimated
 parameters (the elements of the Cholesky decomposition matrix),
 \code{"cov"} for the covariance matrix and \code{"cor"} for the
 correlation matrix and the standard deviations,}
+
+\item{n, m}{see \code{\link[dfidx:idx]{dfidx::idx()}}}
 
 \item{newdata}{a \code{data.frame} for the \code{predict} method,}
 

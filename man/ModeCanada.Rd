@@ -4,7 +4,8 @@
 \name{ModeCanada}
 \alias{ModeCanada}
 \title{Mode Choice for the Montreal-Toronto Corridor}
-\format{A dataframe containing
+\format{
+A dataframe containing
 \itemize{
 \item case: the individual index,
 \item alt: the alternative, one of train, car, bus and air,
@@ -16,7 +17,8 @@
 \item income: income,
 \item urban: urban,
 \item noalt: the number of alternatives available.
-}}
+}
+}
 \source{
 kindly provided by S. Koppelman
 }
@@ -31,10 +33,10 @@ ModeCanada <- subset(ModeCanada, noalt == 4)
 ModeCanada <- subset(ModeCanada, alt != "bus")
 ModeCanada$alt <- ModeCanada$alt[drop = TRUE]
 KoppWen00 <- mlogit.data(ModeCanada, shape='long', chid.var = 'case',
-                         alt.var = 'alt', choice='choice',
-                         drop.index=TRUE)
-pcl <- mlogit(choice~freq+cost+ivt+ovt, KoppWen00, reflevel='car',
-              nests='pcl', constPar=c('iv:train.air'))
+                         alt.var = 'alt', choice = 'choice',
+                         drop.index = TRUE)
+pcl <- mlogit(choice ~ freq + cost + ivt + ovt, KoppWen00, reflevel = 'car',
+              nests = 'pcl', constPar = c('iv:train.air'))
 
 }
 \references{

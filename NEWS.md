@@ -1,3 +1,25 @@
+# mlogit 1.1-1
+
+* minir update, the JSS paper is cited and used in the CITATION file
+
+# mlogit 1.1-0
+
+* major update, mlogit now depends on dfidx, mlogit.data, mFormula and
+  index are deprecated
+
+* the name of the coefficients is changed, i.e. air:income is now
+  income:air
+  
+# mlogit 1.0-3
+
+* some numerical disperancies were caused by Rout.save files. Some
+  IGNORE tags are introduced to fix that.
+
+# mlogit 1.0-2
+
+* bug in model.frame : indexing by a factor and not a character to get
+  the relevant subset of id in the index
+
 # mlogit 1.0-0
 
 * a new package version which coincides with the Journal of

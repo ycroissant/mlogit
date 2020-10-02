@@ -4,11 +4,12 @@
 \name{RiskyTransport}
 \alias{RiskyTransport}
 \title{Risky Transportation Choices}
-\format{A dataframe containing:
+\format{
+A dataframe containing:
 \itemize{
 \item id: individual id,
 \item choice: 1 for the chosen mode,
-\item mode: one of \code{Helicopter},\code{WaterTaxi}, \code{Ferry, and }Hovercraft`,
+\item mode: one of \code{Helicopter},\code{WaterTaxi}, \verb{Ferry, and }Hovercraft`,
 \item cost: the generalised cost of the transport mode,
 \item risk: the fatality rate, numbers of death per 100,000 trips,
 \item weight: weights,
@@ -30,7 +31,8 @@
 \code{no} otherwise,
 \item swim: \code{yes} if the traveler knows how to swim, `no,
 otherwise.
-}}
+}
+}
 \source{
 \href{http://aeaweb.org/aer/}{American Economic Association data archive}.
 }

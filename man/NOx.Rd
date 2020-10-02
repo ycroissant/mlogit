@@ -4,7 +4,8 @@
 \name{NOx}
 \alias{NOx}
 \title{Technologies to reduce NOx emissions}
-\format{A dataframe containing:
+\format{
+A dataframe containing:
 \itemize{
 \item chid: the plant id,
 \item alt: the alternative,
@@ -21,7 +22,8 @@ available,
 \item age: age of the plant (in deviation from the mean age).,
 \item vcost: variable cost,
 \item kcost: capital cost.
-}}
+}
+}
 \source{
 \href{http://aeaweb.org/aer/}{American Economic Association data archive}.
 }
