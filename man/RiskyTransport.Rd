@@ -34,7 +34,7 @@ otherwise.
 }
 }
 \source{
-\href{http://aeaweb.org/aer/}{American Economic Association data archive}.
+\href{https://aeaweb.org/aer/}{American Economic Association data archive}.
 }
 \description{
 1793 choices by 561 individuals of a transport mode at Freetwon

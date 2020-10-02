@@ -22,7 +22,7 @@ system,
 }
 }
 \source{
-\href{http://elsa.berkeley.edu/~train/}{Kenneth Train's home page}.
+\href{https://elsa.berkeley.edu/~train/}{Kenneth Train's home page}.
 }
 \description{
 A sample of 250 Californian households

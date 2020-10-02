@@ -20,7 +20,7 @@ minutes,
 }
 }
 \source{
-\href{http://jae.wiley.com/jae/}{Journal of Applied Econometrics data archive}.
+\href{https://wileyonlinelibrary.com/journal/jae/}{Journal of Applied Econometrics data archive}.
 }
 \description{
 A sample of 235 Dutch individuals facing 2929 choice situations

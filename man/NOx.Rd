@@ -25,7 +25,7 @@ available,
 }
 }
 \source{
-\href{http://aeaweb.org/aer/}{American Economic Association data archive}.
+\href{https://aeaweb.org/aer/}{American Economic Association data archive}.
 }
 \description{
 A sample of 632 American production units
