@@ -54,7 +54,13 @@ model.response.mlogit(object, ...)
 
 \method{idx_name}{mlogit}(x, n = NULL, m = NULL)
 
-\method{predict}{mlogit}(object, newdata = NULL, returnData = FALSE, ...)
+\method{predict}{mlogit}(
+  object,
+  newdata = NULL,
+  type = "probabilities",
+  returnData = FALSE,
+  ...
+)
 
 \method{fitted}{mlogit}(
   object,

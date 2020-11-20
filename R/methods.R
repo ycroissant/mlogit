@@ -190,7 +190,7 @@ idx_name.mlogit <- function(x, n = NULL, m = NULL){
 
 #' @rdname miscmethods.mlogit
 #' @export
-predict.mlogit <- function(object, newdata = NULL, returnData = FALSE, ...){
+predict.mlogit <- function(object, newdata = NULL, type = "probabilities", returnData = FALSE, ...){
     # if no newdata is provided, use the mean of the model.frame
     if (is.null(newdata)){
         newdata <- mean(object$model)
@@ -244,10 +244,13 @@ predict.mlogit <- function(object, newdata = NULL, returnData = FALSE, ...){
     # update the model and get the probabilities
     newobject <- update(object, start = coef(object, fixed = TRUE), data = newdata, iterlim = 0, print.level = 0)
 #    newobject <- update(object, start = coef(object), data = newdata, iterlim = 0, print.level = 0)
-    result <- newobject$probabilities
-    if (nrow(result) == 1){
-        result <- as.numeric(result)
-        names(result) <- colnames(object$probabilities)
+    
+    result <- fitted(newobject, type)
+    if(type == "probabilities"){
+        if (nrow(result) == 1){
+            result <- as.numeric(result)
+            names(result) <- colnames(object$probabilities)
+        }
     }
     if (returnData) attr(result, "data") <- newdata
     result
