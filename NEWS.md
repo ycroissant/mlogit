@@ -1,6 +1,11 @@
+# mlogit 1.1-2
+
+* bug fixed in mlogit (the to.omit variable could be NULL wwhich
+  caused a bug) thanks to Matt Woeran
+
 # mlogit 1.1-1
 
-* minir update, the JSS paper is cited and used in the CITATION file
+* minor update, the JSS paper is cited and used in the CITATION file
 
 # mlogit 1.1-0
 

@@ -409,8 +409,9 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
         # by model.frame
         Xs <- na.omit(Xs)
         to.omit <- attr(Xs, "na.action")
-        Xs <- Xs[! duplicated(chid[- to.omit]), - 1, drop = FALSE]
-        # incompréhensible !!!!!!
+        if (is.null(to.omit)) Xs <- Xs[! duplicated(chid), - 1, drop = FALSE]
+        else Xs <- Xs[! duplicated(chid[- to.omit]), - 1, drop = FALSE]
+        # incompréhensible !!!!!! bug fix Matt Woeran 2020/09/02
         formula <- Formula(formula(formula, rhs = 1:3))
 #        formula <- mFormula(formula(as.Formula(formula), rhs = 1:3))
     }
