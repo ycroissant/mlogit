@@ -69,7 +69,7 @@ model is estimated,}
 and values the distribution : \code{'n'} for normal, \code{'l'} for
 log-normal, \code{'t'} for truncated normal, \code{'u' } for uniform,}
 
-\item{probit}{if \code{TRUE}, a multinomial porbit model is estimated,}
+\item{probit}{if \code{TRUE}, a multinomial probit model is estimated,}
 
 \item{R}{the number of function evaluation for the gaussian
 quadrature method used if \code{heterosc = TRUE}, the number of
@@ -137,7 +137,7 @@ choice argument as it is deduced from the formula.
 The model is estimated using the \code{\link[=mlogit.optim]{mlogit.optim()}}.
 function.
 
-The basic multinomial logit model and three important extentions of
+The basic multinomial logit model and three important extensions of
 this model may be estimated.
 
 If \code{heterosc=TRUE}, the heteroscedastic logit model is estimated.
@@ -152,8 +152,8 @@ If \code{nests} is not \code{NULL}, the nested logit model is estimated.
 If \code{rpar} is not \code{NULL}, the random parameter model is estimated.
 The probabilities are approximated using simulations with \code{R} draws
 and halton sequences are used if \code{halton} is not
-\code{NULL}. Pseudo-random numbers are drawns from a standard normal and
-the relevant transformations are performed to obtain numbers drawns
+\code{NULL}. Pseudo-random numbers are drawn from a standard normal and
+the relevant transformations are performed to obtain numbers drawn
 from a normal, log-normal, censored-normal or uniform
 distribution. If \code{correlation = TRUE}, the correlation between the
 random parameters are taken into account by estimating the
@@ -191,7 +191,7 @@ m <- mlogit(mode ~ price + catch | income, data = Fish, reflevel = "charter")
 m <- mlogit(mode ~ price + catch | income, data = Fish,
             alt.subset = c("charter", "pier", "beach"))
 
-## model on unbalanced data i.e. for some observations, some
+## model on unbalanced data, i.e., for some observations, some
 ## alternatives are missing
 # a data.frame in wide format with two missing prices
 Fishing2 <- Fishing
@@ -217,7 +217,7 @@ TravelMode$incomeother <- with(TravelMode, ifelse(mode \%in\% c('air', 'car'), i
 nl <- mlogit(choice ~ gcost + wait + incomeother, TravelMode,
              nests = list(public = c('train', 'bus'), other = c('car','air')))
              
-# same with a comon nest elasticity (model 1)
+# same with a common nest elasticity (model 1)
 nl2 <- update(nl, un.nest.el = TRUE)
 
 ## a probit model

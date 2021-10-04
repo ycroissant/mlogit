@@ -420,7 +420,7 @@ effects.mlogit <- function(object, covariate = NULL,
 #' @param type with this argument, the covariance matrix may be returned (the
 #' default) ; the correlation matrix with the standard deviation on the
 #' diagonal may also be extracted,
-#' @param reflevel relevent for the extraction of the errors of a multinomial
+#' @param reflevel relevant for the extraction of the errors of a multinomial
 #' probit model ; in this case the covariance matrix is of error differences is
 #' returned and, with this argument, the alternative used for differentiation
 #' is indicated,
@@ -816,7 +816,7 @@ ltm <- function(x, to = c("vec", "mat", "ltm")){
     }
     else{
         if (! identical(x, t(x))){
-            # the matrix is not symetric, its upper triangular
+            # the matrix is not symmetric, its upper triangular
             # elements should be 0
             if (any(x[upper.tri(x)] != 0))
                 stop("the matrix is not symetric, it should have only zero ont the upper triangular part")

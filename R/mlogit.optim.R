@@ -6,7 +6,7 @@
 #' @name mlogit.optim
 #' @param logLik the likelihood function to be maximized,
 #' @param start the initial value of the vector of coefficients,
-#' @param method the method used, one of `'nr'` for Newton-Ralphson,
+#' @param method the method used, one of `'nr'` for Newton-Raphson,
 #'     `'bhhh'` for Berndt-Hausman-Hall-Hall and `'bfgs'`,
 #' @param iterlim the maximum number of iterations,
 #' @param tol the value of the criteria for the gradient,
@@ -15,7 +15,7 @@
 #' @param print.level one of (0, 1, 2), the details of the printing
 #'     messages.  If `'print.level = 0'`, no information about the
 #'     optimization process is provided, if `'print.level = 1'` the
-#'     value of the likelihood, the step and the stoping criteria is
+#'     value of the likelihood, the step and the stopping criteria is
 #'     printing, if `'print.level = 2'` the vectors of the parameters
 #'     and the gradient are also printed.
 #' @param constPar a numeric or a character vector which indicates
@@ -39,7 +39,7 @@
 #' if `method = 'bfgs'`, H^-1 is updated at each iteration using a
 #' formula that uses the variations of the vector of parameters and
 #' the gradient. The initial value of the matrix is the inverse of the
-#' outer-product of the gradient (i.e. the bhhh estimator of the
+#' outer-product of the gradient (i.e., the bhhh estimator of the
 #' hessian).
 #' 
 #' The initial step is 1 and, if the new value of the function is less
@@ -87,15 +87,15 @@
 #' 
 #' a list that contains the followings elements :
 #'
-#' - optimum: the value of the function at the optimum, with
+#' - `optimum`: the value of the function at the optimum, with
 #' attributes: `gradi` a matrix that contains the contribution of each
-#' individual to the gradient, `gradient` the gradient and, if `method
-#' = 'nr', `hessian` the hessian,
-#' - coefficients: the vector of the parameters at the optimum,
-#' - est.stat: a list that contains some information about the
+#' individual to the gradient, `gradient` the gradient and, if 
+#' `method = 'nr'`, `hessian` the hessian,
+#' - `coefficients`: the vector of the parameters at the optimum,
+#' - `est.stat`: a list that contains some information about the
 #' optimization : `'nb.iter'` the number of iterations, `'eps'` the
-#' value of the stoping criteria, `'method'` the method of
-#' optimization method used, `'message'
+#' value of the stopping criteria, `'method'` the method of
+#' optimization method used, `'message'`.
 #' 
 #' @author Yves Croissant
 #' @keywords regression

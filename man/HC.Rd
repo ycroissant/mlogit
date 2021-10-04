@@ -8,11 +8,11 @@
 A dataframe containing :
 \itemize{
 \item depvar: heating system, one of \code{gcc} (gas central heat with
-cooling), \code{ecc} (electric central resistence heat with cooling), \code{erc}
+cooling), \code{ecc} (electric central resistance heat with cooling), \code{erc}
 (electric room resistence heat with cooling), \code{hpc} (electric heat
 pump which provides cooling also), \code{gc} (gas central heat without
-cooling), \code{ec} (electric central resistence heat without cooling), \code{er}
-(electric room resistence heat without cooling),
+cooling), \code{ec} (electric central resistance heat without cooling), \code{er}
+(electric room resistance heat without cooling),
 \item ich.z: installation cost of the heating portion of the
 system,
 \item icca: installation cost for cooling,

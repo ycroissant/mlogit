@@ -42,7 +42,7 @@
 #' @param rpar a named vector whose names are the random parameters
 #'     and values the distribution : `'n'` for normal, `'l'` for
 #'     log-normal, `'t'` for truncated normal, `'u' ` for uniform,
-#' @param probit if `TRUE`, a multinomial porbit model is estimated,
+#' @param probit if `TRUE`, a multinomial probit model is estimated,
 #' @param R the number of function evaluation for the gaussian
 #'     quadrature method used if `heterosc = TRUE`, the number of
 #'     draws of pseudo-random numbers if `rpar` is not `NULL`,
@@ -78,7 +78,7 @@
 #' The model is estimated using the [mlogit.optim()].
 #' function.
 #' 
-#' The basic multinomial logit model and three important extentions of
+#' The basic multinomial logit model and three important extensions of
 #' this model may be estimated.
 #' 
 #' If `heterosc=TRUE`, the heteroscedastic logit model is estimated.
@@ -93,8 +93,8 @@
 #' If `rpar` is not `NULL`, the random parameter model is estimated.
 #' The probabilities are approximated using simulations with `R` draws
 #' and halton sequences are used if `halton` is not
-#' `NULL`. Pseudo-random numbers are drawns from a standard normal and
-#' the relevant transformations are performed to obtain numbers drawns
+#' `NULL`. Pseudo-random numbers are drawn from a standard normal and
+#' the relevant transformations are performed to obtain numbers drawn
 #' from a normal, log-normal, censored-normal or uniform
 #' distribution. If `correlation = TRUE`, the correlation between the
 #' random parameters are taken into account by estimating the
@@ -164,7 +164,7 @@
 #' m <- mlogit(mode ~ price + catch | income, data = Fish,
 #'             alt.subset = c("charter", "pier", "beach"))
 #' 
-#' ## model on unbalanced data i.e. for some observations, some
+#' ## model on unbalanced data, i.e., for some observations, some
 #' ## alternatives are missing
 #' # a data.frame in wide format with two missing prices
 #' Fishing2 <- Fishing
@@ -190,7 +190,7 @@
 #' nl <- mlogit(choice ~ gcost + wait + incomeother, TravelMode,
 #'              nests = list(public = c('train', 'bus'), other = c('car','air')))
 #'              
-#' # same with a comon nest elasticity (model 1)
+#' # same with a common nest elasticity (model 1)
 #' nl2 <- update(nl, un.nest.el = TRUE)
 #' 
 #' ## a probit model
@@ -429,7 +429,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     choice <- na.omit(alt[y])
     # compute the choice frequency table
     freq <- table(alt[as.logical(y)])
-    #YC should do the same, much simplier
+    #YC should do the same, much simpler
     freq <- table(choice)
     # Xl and yl are lists of length J which contains N matrix / vector
     # of covariates and response; yv is a vector that contains the

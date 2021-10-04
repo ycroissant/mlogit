@@ -7,8 +7,8 @@
 \format{
 A dataframe containing:
 \itemize{
-\item id: individual identifient,
-\item choiceid: choice identifient,
+\item id: individual identifier,
+\item choiceid: choice identifier,
 \item choice: one of 'A' or 'B',
 \item price_z: price of proposition z (z = 'A', 'B') in cents of
 guilders,

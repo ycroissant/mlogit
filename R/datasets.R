@@ -108,11 +108,11 @@ NULL
 #' @format A dataframe containing :
 #' 
 #' - depvar: heating system, one of `gcc` (gas central heat with
-#' cooling), `ecc` (electric central resistence heat with cooling), `erc`
+#' cooling), `ecc` (electric central resistance heat with cooling), `erc`
 #' (electric room resistence heat with cooling), `hpc` (electric heat
 #' pump which provides cooling also), `gc` (gas central heat without
-#' cooling), `ec` (electric central resistence heat without cooling), `er`
-#' (electric room resistence heat without cooling),
+#' cooling), `ec` (electric central resistance heat without cooling), `er`
+#' (electric room resistance heat without cooling),
 #' - ich.z: installation cost of the heating portion of the
 #' system,
 #' - icca: installation cost for cooling,
@@ -165,13 +165,13 @@ NULL
 #' - choice.c: the chosen country,
 #' - wage: wage rate in the region,
 #' - unemp: unemployment rate in the region,
-#' - elig: is the country eligible to european subsidies,
+#' - elig: is the country eligible to European subsidies,
 #' - area: the area of the region,
 #' - scrate:  social charge rate (country level),
 #' - ctaxrate: corporate tax rate (country level),
 #' - gdp: regional gdp,
-#' - harris: harris' market potential,
-#' - krugman: krugman's market potential,
+#' - harris: Harris' market potential,
+#' - krugman: Krugman's market potential,
 #' - domind: domestic industry count,
 #' - japind: japan industry count,
 #' - network: network count.
@@ -211,8 +211,8 @@ NULL
 #' - alt: the alternative, one of train, car, bus and air,
 #' - choice: one if the mode is chosen, zero otherwise,
 #' - cost: monetary cost,
-#' - ivt: in vehicule time,
-#' - ovt: out vehicule time,
+#' - ivt: in vehicle time,
+#' - ovt: out vehicle time,
 #' - frequency: frequency,
 #' - income: income,
 #' - urban: urban,
@@ -259,7 +259,7 @@ NULL
 #' available,
 #' - env: the regulatory environment, one of `'regulated'`,
 #' `'deregulated'` and `'public'`,
-#' - post: dummy for post-combustion polution control technology,
+#' - post: dummy for post-combustion pollution control technology,
 #' - cm: dummy for combustion modification technology,
 #' - lnb: dummy for low NOx burners technology,
 #' - age: age of the plant (in deviation from the mean age).,
@@ -330,8 +330,8 @@ NULL
 #' @docType data
 #' @format A dataframe containing:
 #' 
-#' - id: individual identifient,
-#' - choiceid: choice identifient,
+#' - id: individual identifier,
+#' - choiceid: choice identifier,
 #' - choice: one of 'A' or 'B',
 #' - price_z: price of proposition z (z = 'A', 'B') in cents of
 #' guilders,
@@ -421,21 +421,21 @@ NULL
 #' @docType data
 #' @format A dataframe containing :
 #'
-#' - choice: choice of a vehicule amoung 6 propositions, 
+#' - choice: choice of a vehicle among 6 propositions, 
 #' - college: college education?,
 #' - hsg2: size of household greater than 2? 
-#' - coml5: commulte lower than 5 miles a day?, 
-#' - typez: body type, one of regcar (regular car), sportuv (sport utility vehicule), sportcar, stwagon (station wagon), truck, van, for each proposition z from 1 to 6, 
+#' - coml5: commute lower than 5 miles a day?, 
+#' - typez: body type, one of regcar (regular car), sportuv (sport utility vehicle), sportcar, stwagon (station wagon), truck, van, for each proposition z from 1 to 6, 
 #' - fuelz: fuel for proposition z, one of gasoline, methanol, cng (compressed natural gas), electric.,
-#' - pricez: price of vehicule divided by the logarithme of income,
-#' - rangez: hundreds of miles vehicule can travel between refuelings/rechargings, 
+#' - pricez: price of vehicle divided by the logarithm of income,
+#' - rangez: hundreds of miles vehicle can travel between refuelings/rechargings, 
 #' - accz: acceleration, tens of seconds required to reach 30 mph from stop, 
 #' - speedz: highest attainable speed in hundreds of mph, 
-#' - pollutionz: tailpipe emissions as fraction of those for new gas vehicule, 
-#' - sizez: 0 for a mini, 1 for a subcompact, 2 for a compact and 3 for a mid--size or large vehicule, 
-#' - spacez: fraction of luggage space in comparable new gas vehicule, 
-#' - costz: cost per mile of travel (tens of cents) : home recharging for electric vehicule, station refueling otherwise, 
-#' - stationz: fraction of stations that can refuel/recharge vehicule.
+#' - pollutionz: tailpipe emissions as fraction of those for new gas vehicle, 
+#' - sizez: 0 for a mini, 1 for a subcompact, 2 for a compact and 3 for a mid--size or large vehicle, 
+#' - spacez: fraction of luggage space in comparable new gas vehicle, 
+#' - costz: cost per mile of travel (tens of cents) : home recharging for electric vehicle, station refueling otherwise, 
+#' - stationz: fraction of stations that can refuel/recharge vehicle.
 #'
 #' @source
 #' [Journal of Applied Econometrics data archive](https://wileyonlinelibrary.com/journal/jae/).
