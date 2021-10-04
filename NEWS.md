@@ -1,6 +1,6 @@
 # mlogit 1.1-2
 
-* bug fixed in mlogit (the to.omit variable could be NULL wwhich
+* bug fixed in mlogit (the to.omit variable could be NULL which
   caused a bug) thanks to Matt Woeran
 
 # mlogit 1.1-1
@@ -17,7 +17,7 @@
   
 # mlogit 1.0-3
 
-* some numerical disperancies were caused by Rout.save files. Some
+* some numerical discrepancies were caused by Rout.save files. Some
   IGNORE tags are introduced to fix that.
 
 # mlogit 1.0-2
@@ -42,7 +42,7 @@
 
 * the R files for the vignettes are added (they were note while building the package on RForge)
 
-* thank's to Mallick Hossain, a bug is fixed in the logsum function
+* thanks to Mallick Hossain, a bug is fixed in the logsum function
 
 # mlogit 0.4-1
 
@@ -57,7 +57,7 @@
 * the main vignette is improved, writen in markdown and now and split
   by sections
 
-* the Exercises vignette is splited and is now writen in markdown
+* the Exercises vignette is split and is now written in markdown
 
 * importantly, the Cholesky matrix is now coerced to a vector by rows
   and note by columns.
@@ -79,7 +79,7 @@
 * a logsum function is provided to compute the log-sum or the
   inclusive utility of a random utility model,
 
-* group-hetheroscedastic model can be estimated by setting the
+* group-heteroscedastic model can be estimated by setting the
   relevant covariates in the 4th part of the formula,
 
 * the linear predictor is now returned by mlogit,
@@ -103,7 +103,7 @@
 
 A new vignette called mlogit2 is added ; this is the draft version of
 an article submitted to the Journal of Statistical Software ; it is
-less exhaustive, but better writen thant the original mlogit vignette.
+less exhaustive, but better written than the original mlogit vignette.
 
 ## miscellanous
 
@@ -125,10 +125,10 @@ less exhaustive, but better writen thant the original mlogit vignette.
 
 # mlogit  0.2-4
 
-* the list of primes used to generate halton sequences was too
+* the list of primes used to generate Halton sequences was too
 	short, its length has been increased
 
-* halton sequences where used to estimate mixed logit even for
+* Halton sequences where used to estimate mixed logit even for
 	the default value of halton (NULL), this has been fixed
 
 * the contribution of each observation to the gradient is not
@@ -261,7 +261,7 @@ less exhaustive, but better writen thant the original mlogit vignette.
 
 # mlogit 0.1-3
 
-* major change, most of the package has been rewriten
+* major change, most of the package has been rewritten
 
 * it is now possible to estimate heteroscedastic, nested and mixed
 	effects logit model
