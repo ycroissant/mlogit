@@ -13,7 +13,7 @@ Description: Maximum likelihood estimation of random utility discrete
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL (>=2)
-URL: https://cran.r-project.org/package=mlogit, https://r-forge.r-project.org/projects/mlogit/
-RoxygenNote: 7.1.1
+URL: https://cran.r-project.org/package=mlogit, https://github.com/ycroissant/mlogit
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack
