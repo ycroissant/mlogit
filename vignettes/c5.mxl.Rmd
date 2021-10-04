@@ -404,7 +404,7 @@ the likelihood ratio test, only at the 5\% level for the score test.
 ### RiskyTransport
 
 The second example is a study by @LEON:MIGU:17 who consider a
-mode-choice model for transit from Freetown's airport (Sierra-Leone)
+mode-choice model for transit from Freetown's airport (Sierra Leone)
 to downtown. Four alternatives are available: ferry, helicopter,
 water-taxi and hovercraft. A striking characteristic of their study is
 that all these alternatives experienced fatal accidents in recent

@@ -47,7 +47,7 @@ of the 5 systems) and 5 operating costs. To estimate the logit model,
 the researcher needs data on the attributes of all the alternatives,
 not just the attributes for the chosen alternative. For example, it is
 not sufficient for the researcher to determine how much was paid for
-the system that was actually installed (ie., the bill for the
+the system that was actually installed (i.e.., the bill for the
 installation). The researcher needs to determine how much it would
 have cost to install each of the systems if they had been
 installed. The importance of costs in the choice process (i.e., the

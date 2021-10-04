@@ -15,8 +15,8 @@ options(width = 65)
 
 Random utility models is the reference approach in economics when one
 wants to analyze the choice by a decision maker of one among a set of
-mutually exclusive alternatives. Since the seminal works of Daniel Mc
-Fadden [@MCFAD:74, MCFAD:78] who won the Nobel prize in economics "for
+mutually exclusive alternatives. Since the seminal works of Daniel 
+McFadden [@MCFAD:74, MCFAD:78] who won the Nobel prize in economics "for
 his development of theory and methods for analyzing discrete choice",
 a large amount of theoretical and empirical literature have been
 developed in this field.^[For a presentation of this literature, see
@@ -29,7 +29,7 @@ Japanese firms of an European region for implementing a new production
 unit, @FOWL:10 analyse the choice of a NO$_x$ emissions reduction
 technology by electricity production plants, @KLIN:THOM:96 and
 @HERR:KLIN:99 consider how the choice of a fishing mode can be
-explained by the price and the catch expectency, @DIPA:JAIN:94
+explained by the price and the catch expectancy, @DIPA:JAIN:94
 investigate the brand choice for yogurts, @BHAT:95 analyse transport
 mode choice for the Montreal-Toronto corridor.
 
@@ -38,7 +38,7 @@ rank the different alternatives by an order of preference represented
 by a utility function, the chosen alternative being the one which is
 associated with the highest level of utility. They are called random
 utility models because part of the utility is unobserved and is
-modelised as the realisation of a random deviate. 
+modeled as the realisation of a random deviate. 
 
 Different hypothesis on the distribution of this random deviate lead
 to different flavors of random utility models. Early developments of
@@ -68,9 +68,9 @@ model (**S-MNL**).
 The first version of `mlogit` was posted in 2008, it was the first `R`
 package allowing the estimation of random utility models. Since then,
 other package have emerged [see @SARR:DAZI:17 page 4 for a survey of
-revelant R pakages].  `mlogit` still provides the widests set of
+relevant R packages].  `mlogit` still provides the widest set of
 estimators for random utility models and, moreover, its syntax has
-been adopted by other `R` packages. Those packages provide usefull
+been adopted by other `R` packages. Those packages provide useful
 additions to `mlogit`:
 
 - `mnlogit` enables efficient estimation of **MNL** for

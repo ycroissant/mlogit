@@ -127,7 +127,7 @@ head(Tr, 3)
 An `idx` column is added to the data, which contains the three
 relevant indexes: `choiceid` is the choice situation index, `alt` the
 alternative index and `id` is the individual index. This column can be
-extracted using the `idx` funtion:
+extracted using the `idx` function:
 
 ```{r label = 'index of the transformed Train data set'}
 head(idx(Tr), 3)
@@ -252,7 +252,7 @@ V_{ij}=\alpha_j + \beta x_{ij} + \nu t_j + \gamma_j z_i + \delta_j w_{ij} .
 $$
 
 As the absolute value of utility is irrelevant, only utility
-differences are useful to modelise the choice for one alternative. For
+differences are useful to model the choice for one alternative. For
 two alternatives $j$ and $k$, we obtain:
 
 $$ V_{ij}-V_{ik}=(\alpha_j-\alpha_k) + \beta (x_{ij}-x_{ik}) +
@@ -283,7 +283,7 @@ The treatment of alternative specific variables don't differ much from
 the alternative and choice situation specific variables with a generic
 coefficient. However, if some of these variables are introduced, the
 $\nu$ parameter can only be estimated in a model without intercepts to
-avoid perfect multicolinearity.
+avoid perfect multicollinearity.
 
 Individual-related heteroscedasticity [see @SWAI:LOUV:93] can
 be addressed by writing the utility of choosing $j$ for individual
@@ -296,7 +296,7 @@ shouldn't be confused with alternative heteroscedasticity ($\sigma^2_j
 \neq \sigma^2_k$) which is introduced in the heteroskedastic logit
 model described in vignette [relaxing the iid
 hypothesis](./c4.relaxiid.html)].  As the overall scale of utility is
-irrelevant, the utility can also be writen as: $U_{ij}^* = U_{ij} /
+irrelevant, the utility can also be written as: $U_{ij}^* = U_{ij} /
 \sigma_i = V_{ij}/\sigma_i + \epsilon_{ij}$, i.e., with homoscedastic
 errors. if $V_{ij}$ is a linear combination of covariates, the
 associated coefficients are then divided by $\sigma_i$.

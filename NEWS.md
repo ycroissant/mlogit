@@ -49,12 +49,12 @@
 * the Cracker, Catsup and Car data set are back in mlogit since AER,
   flexmix and mlogitBMA run examples based on them.
 
-* the alt vector in the index is now carrefully checked in case of
+* the alt vector in the index is now carefully checked in case of
   alternative subseting or reference level change.
 
 # mlogit 0.4-0
 
-* the main vignette is improved, writen in markdown and now and split
+* the main vignette is improved, written in markdown and now and split
   by sections
 
 * the Exercises vignette is split and is now written in markdown
@@ -193,7 +193,7 @@ less exhaustive, but better written than the original mlogit vignette.
 
 * mFormula modified so that models can be updated
 
-* likelihood has been rewriten for the heteroscedastic logit
+* likelihood has been rewritten for the heteroscedastic logit
 	model, the computation is now much faster
 
 * nested logit models with overlapping nests are now supported;
@@ -282,7 +282,7 @@ less exhaustive, but better written than the original mlogit vignette.
 
 * hmftest implements the Hausman McFadden test for the IIA hypothesis.
 
-* mlogit.data function has been rewriten. It now use the reshape
+* mlogit.data function has been rewritten. It now use the reshape
   function.
 
 * logitform class is provided to describe a logit model: update,
