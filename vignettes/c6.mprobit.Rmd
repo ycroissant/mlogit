@@ -36,7 +36,7 @@ U_J-U_l&=&(V_J-V_l)+(\epsilon_J-\epsilon_l)<0\\
 \right.
 $$
 
-wich implies, denoting $V^l_j=V_j-V_l$ :
+which implies, denoting $V^l_j=V_j-V_l$ :
 
 $$
 \left\{

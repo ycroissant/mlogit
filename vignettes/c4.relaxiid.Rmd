@@ -228,7 +228,7 @@ the likelihood ratio tests.
 ### JapaneseFDI
 
 @HEAD:MAYE:04 analyzed the choice of one of the 57 European
-regions belonging to 9 countries by Japenese firms to implement a new
+regions belonging to 9 countries by Japanese firms to implement a new
 production unit.
 
 ```{r label = 'loading the JapaneseFDI data set'}

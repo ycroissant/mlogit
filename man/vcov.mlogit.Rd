@@ -44,7 +44,7 @@ relevant if \code{what} \verb{ = "coefficients"}),}
 default) ; the correlation matrix with the standard deviation on the
 diagonal may also be extracted,}
 
-\item{reflevel}{relevent for the extraction of the errors of a multinomial
+\item{reflevel}{relevant for the extraction of the errors of a multinomial
 probit model ; in this case the covariance matrix is of error differences is
 returned and, with this argument, the alternative used for differentiation
 is indicated,}

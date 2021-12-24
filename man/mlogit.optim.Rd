@@ -9,9 +9,9 @@ mlogit.optim(
   start,
   method = c("bfgs", "nr", "bhhh"),
   iterlim = 2000,
-  tol = 1e-06,
-  ftol = 1e-08,
-  steptol = 1e-10,
+  tol = 0.000001,
+  ftol = 0.00000001,
+  steptol = 0.0000000001,
   print.level = 0,
   constPar = NULL,
   ...
@@ -22,7 +22,7 @@ mlogit.optim(
 
 \item{start}{the initial value of the vector of coefficients,}
 
-\item{method}{the method used, one of \code{'nr'} for Newton-Ralphson,
+\item{method}{the method used, one of \code{'nr'} for Newton-Raphson,
 \code{'bhhh'} for Berndt-Hausman-Hall-Hall and \code{'bfgs'},}
 
 \item{iterlim}{the maximum number of iterations,}
@@ -36,7 +36,7 @@ mlogit.optim(
 \item{print.level}{one of (0, 1, 2), the details of the printing
 messages.  If \code{'print.level = 0'}, no information about the
 optimization process is provided, if \code{'print.level = 1'} the
-value of the likelihood, the step and the stoping criteria is
+value of the likelihood, the step and the stopping criteria is
 printing, if \code{'print.level = 2'} the vectors of the parameters
 and the gradient are also printed.}
 
@@ -48,14 +48,15 @@ that some parameters should be treated as constant,}
 \value{
 a list that contains the followings elements :
 \itemize{
-\item optimum: the value of the function at the optimum, with
+\item \code{optimum}: the value of the function at the optimum, with
 attributes: \code{gradi} a matrix that contains the contribution of each
-individual to the gradient, \code{gradient} the gradient and, if \verb{method = 'nr', }hessian` the hessian,
-\item coefficients: the vector of the parameters at the optimum,
-\item est.stat: a list that contains some information about the
+individual to the gradient, \code{gradient} the gradient and, if
+\code{method = 'nr'}, \code{hessian} the hessian,
+\item \code{coefficients}: the vector of the parameters at the optimum,
+\item \code{est.stat}: a list that contains some information about the
 optimization : \code{'nb.iter'} the number of iterations, \code{'eps'} the
-value of the stoping criteria, \code{'method'} the method of
-optimization method used, `'message'
+value of the stopping criteria, \code{'method'} the method of
+optimization method used, \code{'message'}.
 }
 }
 \description{
@@ -78,7 +79,7 @@ contributions of each individual to the gradient,
 if \code{method = 'bfgs'}, H^-1 is updated at each iteration using a
 formula that uses the variations of the vector of parameters and
 the gradient. The initial value of the matrix is the inverse of the
-outer-product of the gradient (i.e. the bhhh estimator of the
+outer-product of the gradient (i.e., the bhhh estimator of the
 hessian).
 
 The initial step is 1 and, if the new value of the function is less

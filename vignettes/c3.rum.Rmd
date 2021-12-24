@@ -287,7 +287,7 @@ summary(ml.MC1)
 
 The frequencies of the different alternatives in the sample are first
 indicated. Next, some information about the optimization are
-displayed: the Newton-Ralphson method (with analytic gradient and
+displayed: the Newton-Raphson method (with analytic gradient and
 hessian) is used, as it is the most efficient method for this simple
 model for which the log-likelihood function is concave. Note that very
 few iterations and computing time are required to estimate this
@@ -478,7 +478,7 @@ defined by the regulatory environment. The 15 technologies are not
 available for every plants, the sample is therefore restricted to
 available technologies, using the `available` covariate. Three
 technology dummies are introduced: `post` for post-combustion
-polution control technology, `cm` for combustion modification
+pollution control technology, `cm` for combustion modification
 technology and `lnb` for low NOx burners technology.
 
 A last model is estimated for the whole sample, but the parameters are
@@ -514,7 +514,7 @@ htmlreg(list(Public = ml.pub, Deregulated = ml.dereg, Regulated = ml.reg,
         omit.coef = "(post)|(cm)|(lnb)", float.pos = "hbt", label = "tab:nox")
 ``` 
 
-Results are presented in the preceeding table, using the `texreg`
+Results are presented in the preceding table, using the `texreg`
 package [@LEIF:13]. Coefficients are very different on the sub-samples
 defined by the regulatory environment. Note in particular that the
 capital cost coefficient is positive and insignificant for public and
