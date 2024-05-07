@@ -14,6 +14,6 @@ VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL (>=2)
 URL: https://cran.r-project.org/package=mlogit, https://r-forge.r-project.org/projects/mlogit/
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack

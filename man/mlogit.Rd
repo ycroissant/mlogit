@@ -66,10 +66,12 @@ nested logit model is estimated,}
 model is estimated,}
 
 \item{rpar}{a named vector whose names are the random parameters
-and values the distribution : \code{'n'} for normal, \code{'l'} for
-log-normal, \code{'t'} for truncated normal, \code{'u' } for uniform,}
+and values the distribution : \code{'n'} for normal, \code{'ln'} for
+log-normal, \code{'tn'} for truncated normal, \code{cn} for censored
+normal, \code{'u' } for uniform, \code{t} for triangular, \code{zbu} for
+zero-bounded uniform and \code{zbt} for zero-bounded triangular,}
 
-\item{probit}{if \code{TRUE}, a multinomial porbit model is estimated,}
+\item{probit}{if \code{TRUE}, a multinomial probit model is estimated,}
 
 \item{R}{the number of function evaluation for the gaussian
 quadrature method used if \code{heterosc = TRUE}, the number of

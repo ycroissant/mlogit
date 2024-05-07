@@ -40,9 +40,11 @@
 #' @param heterosc a boolean, if `TRUE`, the heteroscedastic logit
 #'     model is estimated,
 #' @param rpar a named vector whose names are the random parameters
-#'     and values the distribution : `'n'` for normal, `'l'` for
-#'     log-normal, `'t'` for truncated normal, `'u' ` for uniform,
-#' @param probit if `TRUE`, a multinomial porbit model is estimated,
+#'     and values the distribution : `'n'` for normal, `'ln'` for
+#'     log-normal, `'tn'` for truncated normal, `cn` for censored
+#'     normal, `'u' ` for uniform, `t` for triangular, `zbu` for
+#'     zero-bounded uniform and `zbt` for zero-bounded triangular,
+#' @param probit if `TRUE`, a multinomial probit model is estimated,
 #' @param R the number of function evaluation for the gaussian
 #'     quadrature method used if `heterosc = TRUE`, the number of
 #'     draws of pseudo-random numbers if `rpar` is not `NULL`,
