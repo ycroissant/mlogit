@@ -267,6 +267,8 @@ numderiv <- function(f, param, ...){
     nc
 }
 
+#' @rdname mlogit.optim
+#' @export
 print.est.stat <- function(x, ...){
     et <- x$elaps.time[3]
     i <- x$nb.iter[1]

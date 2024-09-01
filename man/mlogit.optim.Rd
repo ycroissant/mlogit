@@ -2,6 +2,7 @@
 % Please edit documentation in R/mlogit.optim.R
 \name{mlogit.optim}
 \alias{mlogit.optim}
+\alias{print.est.stat}
 \title{Non-linear minimization routine}
 \usage{
 mlogit.optim(
@@ -16,6 +17,8 @@ mlogit.optim(
   constPar = NULL,
   ...
 )
+
+\method{print}{est.stat}(x, ...)
 }
 \arguments{
 \item{logLik}{the likelihood function to be maximized,}

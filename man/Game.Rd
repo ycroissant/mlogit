@@ -19,7 +19,7 @@ whether the given plaform is already owned by the respondent,
 }
 }
 \source{
-\href{https://wileyonlinelibrary.com/journal/jae/}{Journal of Applied Econometrics data archive}.
+\href{https://journaldata.zbw.eu/journals/jae}{Journal of Applied Econometrics data archive}.
 }
 \description{
 A sample of 91 Dutch individuals

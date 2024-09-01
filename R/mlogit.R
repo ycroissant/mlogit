@@ -251,7 +251,6 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # ordinary df or a dfidx ; if the data argument is an ordinary
     # data.frame, call dfidx without the subset argument
 
-
     if ("subset" %in% names(mldata)){
         sub_call <- mldata
         m <- match(c("data", "subset"), names(sub_call), 0)
@@ -260,6 +259,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
         sub_call[[1]] <- as.name("subset")
         data <- eval(sub_call, parent.frame())
     }
+
     # 2 ################################################################
     # Run dfidx (or mlogit.data for backward compatibility) if necessary
     ####################################################################
@@ -284,7 +284,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     if ((to_dfidx | to_mlogit.data | to_common) & ! is_data.frame)
         stop("data is already a dfidx object")
 
-    # if dfidx and mlogit arguments are mixed, the stop
+    # if dfidx and mlogit arguments are mixed, then stop
     if (to_dfidx & to_mlogit.data)
         stop("some specificic arguments of mlogit.data and dfidx are introduced")
 
@@ -333,12 +333,13 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
         }
     }
     # if data is an ordinary dfidx object, add the dfidx_mlogit class
-    if (class(data)[1] == "dfidx") class(data) <- c("dfidx_mlogit", class(data))
-
+#    if (class(data)[1] == "dfidx") class(data) <- c("dfidx_mlogit", class(data))
+    if (! inherits(data, "dfidx_mlogit")) class(data) <- c("dfidx_mlogit", class(data))
+    
     # 3 ######################################################
     # compute the model.frame
     ##########################################################
-
+    attr(data, "clseries") <- c("xseries_mlogit", "xseries")
     mf <- callT
     mf$data <- data
     m <- match(c("formula", "data", "subset", "na.action",
@@ -349,11 +350,11 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # data, then formula
     mf$formula <- data
     mf$data <- formula
+# why specifying the method ?    mf[[1L]] <- as.name("model.frame.dfidx")
     mf[[1L]] <- as.name("model.frame")
     # mlogit needs balanced data
     mf$balanced <- TRUE
     mf <- eval(mf, parent.frame())
-
     # 4 ###########################################################
     # get the dimensions of the model
     ###############################################################
@@ -370,6 +371,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     altnoNA <- factor(altnoNA, levels = alt.lev, labels = alt.lev)
     J <- length(alt.lev)
     N <- length(unique(chid))
+
     # 5 ###########################################################
     # extract the elements of the model
     ###############################################################
@@ -440,6 +442,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     names(Xl) <- levels(alt)
     for (i in levels(alt))  Xl[[i]] <- X[altnoNA == i, , drop = FALSE]
     yl <- split(y, altnoNA)
+    
     yl <- lapply(yl, function(x){x[is.na(x)] <- FALSE ; x})
     unchid <- if(is.factor(chid)) as.character(levels(chid)) else unique(chid)
     attr(yl, "chid") <- unchid
@@ -566,9 +569,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
         opt[c('logLik', 'nests', 'un.nest.el', 'unscaled')] <-
             list(as.name('lnl.nlogit'), as.name('nests'),
                  as.name('un.nest.el'), as.name('unscaled'))
-
     x <- eval(opt, sys.frame(which = nframe))
-    
     # compute the probabilities for all the alternatives for
     # heteroscedastic and the probit model
     if (probit | heterosc){
@@ -835,7 +836,7 @@ mlogit.start <- function(formula, data, mf, start = NULL, un.nest.el = FALSE,
             stop(udstr)
         }        
         names.rpar <- names(rpar)
-        names.rpar.sig <- names.rpar[! rpar %in% c("zbu", "zbt")]
+#        names.rpar.sig <- names.rpar[! rpar %in% c("zbu", "zbt")]
         names.fixed <- colnamesX[! colnamesX %in% names.rpar]
         # the names of the correlated and uncorrelated random
         # parameters in the order of the X matrix

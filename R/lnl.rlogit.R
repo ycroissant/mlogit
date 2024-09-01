@@ -1,3 +1,5 @@
+#' @rdname mlogit
+#' @export
 names.rpar <- function(rpar, prefix = NULL, diag = NULL, unique = FALSE){
     K <- length(rpar)
     nms <- vector(mode = "character", length = K * (K + 1) / 2)

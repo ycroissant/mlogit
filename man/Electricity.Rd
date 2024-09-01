@@ -32,7 +32,7 @@ and distribution, which is supplied by the local regulated utility.
 }
 }
 \source{
-\href{https://elsa.berkeley.edu/~train/}{Kenneth Train's home page}.
+\href{https://eml.berkeley.edu/~train/}{Kenneth Train's home page}.
 }
 \description{
 A sample of 2308 households in the United States

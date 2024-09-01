@@ -18,3 +18,16 @@ package, see the package's vignettes.
 
 \insertRef{TRAI:09}{mlogit}
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://cran.r-project.org/package=mlogit}
+  \item \url{https://r-forge.r-project.org/projects/mlogit/}
+}
+
+}
+\author{
+\strong{Maintainer}: Yves Croissant \email{yves.croissant@univ-reunion.fr}
+
+}
+\keyword{internal}

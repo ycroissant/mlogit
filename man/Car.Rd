@@ -25,7 +25,7 @@ A dataframe containing :
 }
 }
 \source{
-\href{https://wileyonlinelibrary.com/journal/jae/}{Journal of Applied Econometrics data archive}.
+\href{https://journaldata.zbw.eu/journals/jae}{Journal of Applied Econometrics data archive}.
 }
 \description{
 a sample of 4654 individuals

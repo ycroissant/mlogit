@@ -1,6 +1,19 @@
 # mlogit 1.1-2
 
-* bug fixed in mlogit (the to.omit variable could be NULL wwhich
+* roxygen fixes (names.rpar and print.est.stat are now exported,
+  "_PACKAGE" is added in the man page of the package
+
+* in hmftest, class(z) == "a" replaced by inherits(z, "a")
+
+* fixed web adress for JAE data archive, Train's website and Fox's
+  book
+
+* enhanced vignettes, which now are quarto files
+
+* the description of the values of rpar is fixed in the mlogit man
+  page thanks to Martin Eckhoff Andresen
+
+* bug fixed in mlogit (the to.omit variable could be NULL which
   caused a bug) thanks to Matt Woeran
 
 # mlogit 1.1-1
