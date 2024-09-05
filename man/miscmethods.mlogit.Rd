@@ -28,7 +28,7 @@
 
 \method{model.matrix}{mlogit}(object, ...)
 
-model.response.mlogit(object, ...)
+\method{model.response}{mlogit}(object, ...)
 
 \method{update}{mlogit}(object, new, ...)
 

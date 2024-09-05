@@ -2,12 +2,6 @@
 title: "Exercise 4: Multinomial probit"
 author: Kenneth Train and Yves Croissant
 date: '`r Sys.Date()`'
-output: 
-  pdf_document:
-    number-sections: true
-  html_document:
-    toc: true
-    toc_float: true
 vignette: >
   %\VignetteIndexEntry{Exercise 4: Multinomial probit}
   %\VignetteEngine{quarto::pdf}
@@ -64,7 +58,8 @@ Mo <- dfidx(Mode, choice = "choice", varying = 2:9)
 ```
 
 
-```{r probit1}
+```{r }
+#| label: probit1
 p1 <- mlogit(choice ~ cost + time, Mo, seed = 20, 
              R = 100, probit = TRUE)
 ```
@@ -118,7 +113,8 @@ variance very well. But the two estimates will probably give you an
 indication.)
 
   
-```{r probit2}
+```{r}
+#| label: probit2
 p2 <- mlogit(choice ~ cost + time, Mo, seed = 21, 
              R = 100, probit = TRUE)
 ```

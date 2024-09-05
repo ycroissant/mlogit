@@ -7,7 +7,7 @@
 #' 
 #' @name mlogit-deprecated
 #' @aliases mlogit.data mFormula
-#' @param x,object a `formula`, a `dfidx` or a `mlogit` object,
+#' @param object a `formula`, a `dfidx` or a `mlogit` object,
 #' @param data a `data.frame`,
 #' @param choice the variable indicating the choice made: it can be
 #'     either a logical vector, a numerical vector with 0 where the
@@ -157,26 +157,8 @@ model.matrix.mFormula <- function(object, data, ...){
     }   
 }
 
-
 #' @rdname mlogit-deprecated
 #' @export
 is.mFormula <- function(object){
     inherits(object, "mFormula")
-}
-
-
-#' @importFrom zoo index
-#' @export
-zoo::index
-
-#' @rdname mlogit-deprecated
-#' @export
-index.dfidx <- function(x, ...){
-  idx(x, ...)
-}
-
-#' @rdname mlogit-deprecated
-#' @export
-index.mlogit <- function(x, ...){
-  idx(x, ...)
 }

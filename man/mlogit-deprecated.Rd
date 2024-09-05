@@ -8,8 +8,6 @@
 \alias{mFormula.default}
 \alias{model.matrix.mFormula}
 \alias{is.mFormula}
-\alias{index.dfidx}
-\alias{index.mlogit}
 \title{Some deprecated functions, especially \code{mlogit.data}, \code{index} and
 \code{mFormula}}
 \usage{
@@ -40,10 +38,6 @@ mFormula(object)
 \method{model.matrix}{mFormula}(object, data, ...)
 
 is.mFormula(object)
-
-\method{index}{dfidx}(x, ...)
-
-\method{index}{mlogit}(x, ...)
 }
 \arguments{
 \item{data}{a \code{data.frame},}
@@ -94,7 +88,7 @@ observations to be selected,}
 
 \item{...}{further arguments passed to \code{reshape}.}
 
-\item{x, object}{a \code{formula}, a \code{dfidx} or a \code{mlogit} object,}
+\item{object}{a \code{formula}, a \code{dfidx} or a \code{mlogit} object,}
 
 \item{drop}{a boolean, equal to \code{FALSE} if one wants that a
 \code{data.frame} is always returned,}

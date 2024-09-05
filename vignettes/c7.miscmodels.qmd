@@ -1,11 +1,5 @@
 ---
 title: "7. Miscellaneous models"
-output: 
-  pdf_document:
-    number-sections: true
-  html_document:
-    toc: true
-    toc_float: true
 bibliography: ../inst/REFERENCES.bib
 vignette: >
   %\VignetteIndexEntry{7. Miscellaneous models}
@@ -63,9 +57,10 @@ automatically created. The restriction on the nest elasticity for the
 train-air nest is performed by using the `constPar` argument.
 
 
-```{r }
+```{r}
+#| label: pcl
+#| message: false
 library("mlogit")
-data("ModeCanada", package = "mlogit")
 busUsers <- with(ModeCanada, case[choice == 1 & alt == 'bus'])
 Bhat <- subset(ModeCanada, ! case %in% busUsers & alt != 'bus' & noalt == 4)
 Bhat$alt <- Bhat$alt[drop = TRUE]
@@ -116,7 +111,8 @@ respondent (`age`) and the number of hours spent on gaming per week
 (`game2`) format. In wide format, the consists on $J$ columns which
 indicate the ranking of each alternative.
 
-```{r }
+```{r}
+#| label: "game data set"
 data("Game", package = "mlogit")
 data("Game2", package = "mlogit")
 head(Game,2)
@@ -131,6 +127,7 @@ Note that `Game` contains 91 rows (there are 91 individuals) and that
 To use `dfidx`, the `ranked` argument should `TRUE`:
 
 ```{r }
+#| label: "dfidx game"
 G <- dfidx(Game, varying = 1:12, choice = "ch", ranked = TRUE, idnames = c("chid", "alt"))
 G <- dfidx(Game2, choice = "ch", ranked = TRUE, idx = c("chid", "platform"),
            idnames = c("chid", "alt"))
@@ -146,6 +143,7 @@ Using `PC` as the reference level, we can then reproduce the
 results of the original reference :
 
 ```{r }
+#| label: "rol estimation"
 summary(mlogit(ch ~ own | hours + age, G, reflevel = "PC"))
 ``` 
 

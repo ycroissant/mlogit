@@ -1,5 +1,17 @@
 # mlogit 1.1-2
 
+* in logsum, bug fix, the names of the indexes used to be alt and chid
+
+* in the vignette, dfidx now use tibbles instead of ordinary data
+  frames
+
+* LazyData is now TRUE
+
+* the dependence on MASS and zoo is removed
+
+* the index function (methods for the zoo function), already
+  deprecated is now suppressed
+
 * roxygen fixes (names.rpar and print.est.stat are now exported,
   "_PACKAGE" is added in the man page of the package
 

@@ -2,12 +2,6 @@
 title: "Exercise 3: Mixed logit model"
 author: Kenneth Train and Yves Croissant
 date: '`r Sys.Date()`'
-output: 
-  pdf_document:
-    number-sections: true
-  html_document:
-    toc: true
-    toc_float: true
 vignette: >
   %\VignetteIndexEntry{Exercise 3: Mixed logit model}
   %\VignetteEngine{quarto::pdf}
@@ -168,7 +162,7 @@ summary(Elec.mxl2)
 @. You think that everyone must like using a known company rather than
 an unknown one, and yet the normal distribution implies that some
 people dislike using a known company. Revise the program to give the
-coefficient of \va{wk} a uniform distribution between zero and b,where
+coefficient of `wk` a uniform distribution between zero and b,where
 b is estimated (do this with the price coefficient fixed).
 
 ```{r Elec.mxl3, echo = FALSE, results = 'hide'}

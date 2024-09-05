@@ -1,11 +1,5 @@
 ---
 title: "4. Logit models relaxing the iid hypothesis"
-output: 
-  pdf_document:
-    number-sections: true
-  html_document:
-    toc: true
-    toc_float: true
 bibliography: ../inst/REFERENCES.bib
 vignette: >
   %\VignetteIndexEntry{4. Logit models relaxing the iid hypothesis}
@@ -154,10 +148,11 @@ estimator.
 logit model is obtained by setting the `heterosc` argument
 to `TRUE`:
 
-```{r label = 'heteroscedastic model for the ModeCanada data'}
+```{r}
+#| label: "heteroscedastic model for the ModeCanada data"
+#| message: false
 library("mlogit")
-data("ModeCanada", package = "mlogit")
-MC <- dfidx(ModeCanada, subset = noalt == 4, idnames = c("chid", "alt"))
+MC <- dfidx(ModeCanada, subset = noalt == 4)
 ml.MC <- mlogit(choice ~ freq + cost + ivt + ovt | urban + income, MC, 
 reflevel = 'car', alt.subset = c("car", "train", "air"))
 hl.MC <- mlogit(choice ~ freq + cost + ivt + ovt | urban + income, MC, 
@@ -165,8 +160,8 @@ reflevel = 'car', alt.subset = c("car", "train", "air"), heterosc = TRUE)
 coef(summary(hl.MC))[11:12, ]
 ``` 
 
-The variance of the error terms of train and air are respectively
-higher and lower than the variance of the error term of car (set to
+The variance of the error terms of `train` and `air` are respectively
+higher and lower than the variance of the error term of `car` (set to
 1). Note that the z-values and p-values of the output are not
 particularly meaningful, as the hypothesis that the coefficient is
 zero (and not one) is tested.  The homoscedasticity hypothesis can be
@@ -176,14 +171,17 @@ one can use only the fitted heteroscedastic model as argument. In this
 case, it is guessed that the hypothesis that the user wants to test is
 the homoscedasticity hypothesis.
 
-```{r label = 'homoscedasticity tests: lr and Wald (1)'}
+```{r}
+#| label: homoscedasticity tests lr and Wald (1)"
 lr.heter <- lrtest(hl.MC, ml.MC)
 wd.heter <- waldtest(hl.MC, heterosc = FALSE)
 ``` 
 
 or, more simply:
 
-```{r label = 'homoscedasticity tests: lr and Wald (2)', results = 'hide'}
+```{r}
+#| label: "homoscedasticity tests lr and Wald (2)"
+#| results: false
 lrtest(hl.MC)
 waldtest(hl.MC)
 ``` 
@@ -191,9 +189,9 @@ waldtest(hl.MC)
 The Wald test can also be computed using the `linearHypothesis`
 function from the `car` package:
 
-```{r label = 'homoscedasticity tests: Wald test'}
-library("car")
-lh.heter <- linearHypothesis(hl.MC, c('sp.air = 1', 'sp.train = 1'))
+```{r}
+#| label: "homoscedasticity tests: Wald test"
+lh.heter <- car::linearHypothesis(hl.MC, c('sp.air = 1', 'sp.train = 1'))
 ``` 
 
 For the score test, we provide the constrained model as argument,
@@ -201,11 +199,14 @@ which is the standard multinomial logit model and the supplementary
 argument which defines the unconstrained model, which is in this case
 `heterosc = TRUE`.
 
-```{r label = 'homoscedasticity tests: score test'}
+```{r}
+#| label: "homoscedasticity tests: score test"
 sc.heter <- scoretest(ml.MC, heterosc = TRUE)
 ``` 
 
-```{r label = 'convenient statpval function 2', include = FALSE}
+```{r}
+#| label: "convenient statpval function 2"
+#| include: false
 statpval <- function(x){
     if (inherits(x, "anova")) 
         result <- as.matrix(x)[2, c("Chisq", "Pr(>Chisq)")]
@@ -215,14 +216,14 @@ statpval <- function(x){
 }
 ``` 
 
-
-```{r label = 'homoscedasticity tests: results'}
+```{r}
+#| label: "homoscedasticity tests results"
 sapply(list(wald = wd.heter, lh = lh.heter, score = sc.heter,
-lr = lr.heter), statpval)
+            lr = lr.heter), statpval)
 ``` 
 
 The homoscedasticity hypothesis is strongly rejected using the Wald
-test, but only at the 1 and 5\% level for, respectively, the score and
+test, but only at the 1 and 5% level for, respectively, the score and
 the likelihood ratio tests.
 
 ### JapaneseFDI
@@ -231,24 +232,24 @@ the likelihood ratio tests.
 regions belonging to 9 countries by Japenese firms to implement a new
 production unit.
 
-```{r label = 'loading the JapaneseFDI data set'}
-data("JapaneseFDI", package = "mlogit")
-jfdi <- dfidx(JapaneseFDI, idx = list("firm", c("region", "country")), idnames = c("chid", "alt"))
+```{r}
+#| label: "loading the JapaneseFDI data set"
+jfdi <- dfidx(JapaneseFDI, idx = c("firm", country = "region"),
+              drop.index = FALSE)
 ``` 
 
-Note that we've used an extra argument to `dfidx` called
-`group.var` which indicates the grouping variable,
-which will be used later to define easily the nests.  There are two
-sets of covariates: the wage rate `wage`, the unemployment rate
-`unemp`, a dummy indicating that the region is eligible to European
-funds `elig` and the area `area` are observed at the regional
-level and are therefore relevant for the estimation of the lower
-model, whereas the social cotisation rate `scrate` and the
+There are two sets of covariates: the wage rate `wage`, the
+unemployment rate `unemp`, a dummy indicating that the region is
+eligible to European funds `elig` and the area `area` are observed at
+the regional level and are therefore relevant for the estimation of
+the lower model, whereas the social cotisation rate `scrate` and the
 corporate tax rate `ctaxrate` are observed at the country level and
 are therefore suitable for the upper model.
 
 We first estimate a multinomial logit model:
-```{r label = 'multinomial logit for JapaneseFDI'} 
+
+```{r}
+#| label: "multinomial logit for JapaneseFDI"
 ml.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) + scrate +
 ctaxrate | 0, data = jfdi)
 ``` 
@@ -262,8 +263,9 @@ country which has been chosen. Moreover, observations concerning
 Portugal and Ireland are removed as these two countries are
 mono-region.
 
-```{r label = 'lower model estimation'}
-jfdi$country <- jfdi$country
+```{r}
+#| label: "lower model estimation"
+#jfdi$country <- jfdi$country
 lm.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) | 0,
 data = jfdi, subset = country == choice.c & ! country %in% c("PT", "IE"))
 ``` 
@@ -286,7 +288,8 @@ equal to the number of choice situations. If `output` is set to
 in long format is returned. The following code indicates different
 ways to use the `logsum` function:
 
-```{r label = 'use of the logsum function'}
+```{r}
+#| label: "use of the logsum function"
 lmformula <- formula(lm.fdi)
 head(logsum(ml.fdi, data = jfdi, formula = lmformula, type = "group"), 2)
 head(logsum(ml.fdi, data = jfdi, formula = lmformula, type = "global"))
@@ -299,7 +302,8 @@ To add the inclusive values in the original `data.frame`, we use
 `output = "obs"` and the `type` argument can be omitted as its default
 value is `"group"`:
 
-```{r label = 'adding the logsum to the data'}
+```{r}
+#| label: "adding the logsum to the data"
 JapaneseFDI$iv <- logsum(lm.fdi, data = jfdi, formula = lmformula,
 output = "obs")
 ``` 
@@ -309,7 +313,8 @@ model, select unique lines in order to keep only one observation for
 every choice situation / country combination and finally we coerce the
 response (`choice.c`) to a logical for the chosen country.
 
-```{r label = 'data suitable for the upper model'}
+```{r}
+#| label: "data suitable for the upper model"
 JapaneseFDI.c <- subset(JapaneseFDI, 
 select = c("firm", "country", "choice.c", "scrate", "ctaxrate", "iv"))
 JapaneseFDI.c <- unique(JapaneseFDI.c)
@@ -319,7 +324,8 @@ JapaneseFDI.c$choice.c <- with(JapaneseFDI.c, choice.c == country)
 Finally, we estimate the upper model, using the previously computed
 inclusive value as a covariate.
 
-```{r label = 'estimation of the upper model'}
+```{r}
+#| label: "estimation of the upper model"
 jfdi.c <- dfidx(JapaneseFDI.c, choice = "choice.c", idnames = c("chid", "alt"))
 um.fdi <- mlogit(choice.c ~ scrate + ctaxrate + iv | 0, data = jfdi.c)
 ```
@@ -330,7 +336,8 @@ of the formula and the coefficients for the two mono-region countries
 (Ireland and Portugal) should be set to 1, using the
 `constPar` argument.
 
-```{r label = 'upper model with different iv coefficients'}
+```{r}
+#| label: "upper model with different iv coefficients"
 um2.fdi <- mlogit(choice.c ~ scrate + ctaxrate | 0 | iv, data = jfdi.c, 
                   constPar = c("iv:PT" = 1, "iv:IE" = 1))
 ``` 
@@ -349,33 +356,33 @@ every nest, which means that the degree of correlation inside each
 nest is the same. If `FALSE`, a different coefficient is estimated for
 every nest.
 
-```{r label = 'nested logit models'}
+```{r}
+#| label: "nested logit models"
 nl.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) + scrate +
 ctaxrate | 0, data = jfdi, nests = TRUE, un.nest.el = TRUE)
 nl2.fdi <- update(nl.fdi, un.nest.el = FALSE, constPar = c('iv:PT' = 1,
 'iv:IE' = 1))
 ``` 
 
-The results of the fitted models are presented in the following table:
+The results of the fitted models are presented in @tbl-nlogit.
 
-```{r label = 'results for the JapaneseFDI data', results = 'asis'}
-library("texreg")
-htmlreg(list('Mult. logit' = ml.fdi, 'Lower model' = lm.fdi,
-             'Upper model' = um.fdi, 'Upper model' = um2.fdi, 'Nested logit' = nl.fdi,
-             'Nested logit' = nl2.fdi),
-        fontsize = "footnotesize", float.pos = "hbt",  label = "tab:nlogit",
-        caption = "Choice by Japanese firms of a european region.")
+```{r}
+#| label: tbl-nlogit
+#| tbl-cap: "Choice by Japanese firms of a european region."
+modelsummary::msummary(list('Mult. logit' = ml.fdi,
+                            'Lower model' = lm.fdi,
+                            'Upper model' = um.fdi,
+                            'Upper model' = um2.fdi,
+                            'Nested logit' = nl.fdi,
+                            'Nested logit' = nl2.fdi))
 ``` 
 
 For the nested logit models, two tests are of particular interest:
-
 
 - the test of no nests, which means that all the nest elasticities
   are equal to 1,
 - the test of unique nest elasticities, which means that all the
   nest elasticities are equal to each other.
-
-
 
 For the test of no nests, the nested model is provided as the unique
 argument for the `lrtest` and the `waldtest` function. For the
@@ -383,7 +390,8 @@ argument for the `lrtest` and the `waldtest` function. For the
 is provided as the first argument and the second argument is `nests`,
 which describes the nesting structure that one wants to test.
 
-```{r label = 'test of no nests'}
+```{r}
+#| label: "test of no nests"
 lr.nest <- lrtest(nl2.fdi)
 wd.nest <- waldtest(nl2.fdi)
 sc.nest <- scoretest(ml.fdi, nests = TRUE, constPar = c('iv:PT' = 1,
@@ -392,12 +400,15 @@ sc.nest <- scoretest(ml.fdi, nests = TRUE, constPar = c('iv:PT' = 1,
 
 The Wald test can also be performed using the `linearHypothesis`
 function:
-```{r label = 'test of no nests with linhyp'}
-lh.nest <- linearHypothesis(nl2.fdi, c("iv:BE = 1", "iv:DE = 1",
+
+```{r}
+#| label: "test of no nests with linhyp"
+lh.nest <- car::linearHypothesis(nl2.fdi, c("iv:BE = 1", "iv:DE = 1",
 "iv:ES = 1", "iv:FR = 1", "iv:IT = 1", "iv:NL = 1", "iv:UK = 1"))
 ``` 
 
-```{r label = 'results of the tests of no nests'}
+```{r}
+#| label: "results of the tests of no nests"
 sapply(list(wald = wd.nest, lh = lh.nest, score = sc.nest, lr = lr.nest),
 statpval)
 ``` 
@@ -405,16 +416,18 @@ statpval)
 The three tests reject the null hypothesis of no correlation. We next
 test the hypothesis that all the nest elasticities are equal.
 
-```{r label = 'computing the test for equal iv coefficients'}
+```{r}
+#| label: "computing the test for equal iv coefficients"
 lr.unest <- lrtest(nl2.fdi, nl.fdi)
 wd.unest <- waldtest(nl2.fdi, un.nest.el = TRUE)
 sc.unest <- scoretest(ml.fdi, nests = TRUE, un.nest.el = FALSE,
 constPar = c('iv:PT' = 1, 'iv:IE' = 1))
-lh.unest <- linearHypothesis(nl2.fdi, c("iv:BE = iv:DE", "iv:BE = iv:ES", 
+lh.unest <- car::linearHypothesis(nl2.fdi, c("iv:BE = iv:DE", "iv:BE = iv:ES", 
 "iv:BE = iv:FR", "iv:BE = iv:IT", "iv:BE = iv:NL", "iv:BE = iv:UK"))
 ``` 
 
-```{r label = 'results of the tests of equal iv coefficients'}
+```{r}
+#| label: "results of the tests of equal iv coefficients"
 sapply(list(wald = wd.unest, lh = lh.unest, score = sc.unest,
 lr = lr.unest), statpval)
 ```

@@ -1,11 +1,5 @@
 ---
 title: "6. Multinomial probit"
-output: 
-  pdf_document:
-    number-sections: true
-  html_document:
-    toc: true
-    toc_float: true
 bibliography: ../inst/REFERENCES.bib
 vignette: >
   %\VignetteIndexEntry{6. The multinomial probit model}
@@ -283,23 +277,22 @@ This so called GHK algorithm^[see for example
   [@GEWE:KEAN:RUNK:94].] (for Geweke, Hajivassiliou and Keane who
 developed this algorithm) can be described as follow :
 
-\begin{enumerate}
-- compute $\Phi\left(-\frac{V_1^l}{l_{11}}\right)$
-- draw a number called $\eta_1^r$ from a standard normal
+1. compute $\Phi\left(-\frac{V_1^l}{l_{11}}\right)$
+1. draw a number called $\eta_1^r$ from a standard normal
   distribution upper-truncated at $-\frac{V_1^l}{l_{11}}$ and compute
   $\Phi\left(-\frac{V^l_2+l_{21}\eta_1^r}{l_{22}}\right)$
-- draw a number called $\eta_2^r$ from a standard normal
+1. draw a number called $\eta_2^r$ from a standard normal
   distribution upper-truncated at
   $-\frac{V^l_2+l_{21}\eta_1^r}{l_{22}}$ and compute
   $\Phi\left(-\frac{V^l_3+l_{31}\eta_1^r+l_{32}\eta_2^r}{l_{33}}\right)$
-- $...$ draw a number called $\eta_{J-1}^r$ from a standard
+1. $...$ draw a number called $\eta_{J-1}^r$ from a standard
   normal distribution upper-truncated at $-\frac{V^l_{J-1}+l_{(J-1)1}\eta_1^r+... V^l_{J-1}+l_{(J-1)(J-2)}\eta_{J-2}^r}{l_{(J-1)(J-1)}}$
-- multiply all these probabilities and get a realization of the
+1. multiply all these probabilities and get a realization of the
   probability called $P^r_l$.
-- repeat all these steps many times and average all these
+1. repeat all these steps many times and average all these
   probabilities ; this average is an estimation of the probability :
   $\bar{P}_l = \sum_{r=1}^R P^r_l/R$.
-\end{enumerate}
+
 
 Several points should be noted concerning this algorithm :
 
@@ -341,19 +334,24 @@ We use again the `Fishing` data frame, with only a subset of three
 alternatives used. The multinomial probit model is estimated using
 `mlogit` with the `probit` argument equal to `TRUE`.
 
-```{r }
+```{r}
+#| label: "fishing"
+#| message: false
 library("mlogit")
-data("Fishing", package = "mlogit")
 Fish <- dfidx(Fishing, varying = 2:9, choice = "mode", idnames = c("chid", "alt"))
 ``` 
 
 
-```{r }
+```{r}
+#| label: "mprobit estimation"
 Fish.mprobit <- mlogit(mode~price | income | catch, Fish, probit = TRUE, alt.subset=c('beach', 'boat','pier'))
 ```
 
-```{r }
+```{r}
+#| label: "mprobit summary"
 summary(Fish.mprobit)
 ``` 
 
 ## Bibliography
+
+

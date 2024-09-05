@@ -14,8 +14,6 @@
 #' @importFrom stats relevel reshape residuals rnorm runif
 #' @importFrom stats terms update vcov dunif effects
 #' @importFrom statmod gauss.quad
-#' @importFrom MASS ginv
-#' @importFrom zoo index
 #' @param formula a symbolic description of the model to be estimated,
 #' @param data the data: an `mlogit.data` object or an ordinary
 #'     `data.frame`,
@@ -835,7 +833,7 @@ mlogit.start <- function(formula, data, mf, start = NULL, un.nest.el = FALSE,
                            paste(unique(unknowndist), collapse = ", "))
             stop(udstr)
         }        
-        names.rpar <- names(rpar)
+        names.rpar <- names_rpar(rpar)
 #        names.rpar.sig <- names.rpar[! rpar %in% c("zbu", "zbt")]
         names.fixed <- colnamesX[! colnamesX %in% names.rpar]
         # the names of the correlated and uncorrelated random
@@ -873,10 +871,10 @@ mlogit.start <- function(formula, data, mf, start = NULL, un.nest.el = FALSE,
             if (is.null(start) || length(start) == K)
                 sup.coef <- c(sup.coef, rep(0.1, 0.5 * Kc * (Kc + 1)))
             names.sup.coef <- c(names.sup.coef,
-                                names.rpar(correlated, prefix = "chol"))
+                                names_rpar(correlated, prefix = "chol"))
         }
         if (is.null(start) || length(start) == K) names(sup.coef) <- names.sup.coef
-    }
+    } 
     if (probit){
         names.sup.coef <- c()
         for (i in 2:J){

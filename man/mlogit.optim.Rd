@@ -47,6 +47,8 @@ and the gradient are also printed.}
 that some parameters should be treated as constant,}
 
 \item{...}{further arguments passed to \code{f}.}
+
+\item{x}{an \code{est.stat} object}
 }
 \value{
 a list that contains the followings elements :

@@ -2,12 +2,6 @@
 title: "Exercise 1: Multinomial logit model"
 author: Kenneth Train and Yves Croissant
 date: '`r Sys.Date()`'
-output: 
-  pdf_document:
-    number-sections: true
-  html_document:
-    toc: true
-    toc_float: true
 vignette: >
   %\VignetteIndexEntry{Exercise 1: Multinomial logit model}
   %\VignetteEngine{quarto::pdf}
@@ -81,7 +75,7 @@ alternative, etc.
 
 (a) Do the estimated coefficients have the expected signs?
 
-```{r include = include}
+```{r}
 library("mlogit")
 data("Heating", package = "mlogit")
 H <- dfidx(Heating, choice = "depvar", varying = c(3:12))
@@ -102,9 +96,9 @@ summary(m)
 (c) How closely do the average probabilities match the shares of
 customers choosing each alternative?
 
-```{r include = include}
+```{r }
 apply(fitted(m, outcome = FALSE), 2, mean)
-```  
+```
 
 > Not very well. 63.67\% of the sample chose `gc` (as shown at the top of
 > the summary) and yet the estimated model gives an average probability
@@ -127,7 +121,7 @@ dU = \beta_{ic} dic + \beta_{oc} doc = 0 \Rightarrow
 -\frac{dic}{doc}\mid_{dU=0}=\frac{\beta_{oc}}{\beta_{ic}}
 $$
 
-```{r include = include}
+```{r }
 coef(m)["oc"]/coef(m)["ic"]
 ```   
 
@@ -175,7 +169,7 @@ $wtp=8.33$). Test the hypothesis that $r=0.12$.
 > the constraint $lcc=ic+oc/0.12$ and estimate the model with this
 > variable.
 
-```{r include = include}
+```{r }
 H$lcc <- H$ic + H$oc / 0.12
 mlcc <- mlogit(depvar ~ lcc | 0, H)
 library("lmtest")
@@ -202,7 +196,7 @@ the alternative `hp` to 0.
 (a) How well do the estimated probabilities match the shares of
 customers choosing each alternative? 
 
-```{r include = include}
+```{r }
 mc <- mlogit(depvar ~ ic + oc, H, reflevel = 'hp')
 summary(mc)
 apply(fitted(mc, outcome = FALSE), 2, mean)
@@ -215,7 +209,7 @@ apply(fitted(mc, outcome = FALSE), 2, mean)
 (b) Calculate the $wtp$ and discount rate $r$ that is implied by the
 estimates. Are these reasonable?
 
-```{r include = include}
+```{r }
 wtp <- coef(mc)["oc"] / coef(mc)["ic"]
 wtp
 r <- 1 / wtp
@@ -254,7 +248,7 @@ logically rather than actually estimating the model.
 > alt 5 would be $0-.30777=-.3077$, since `hp` is normalized to zero in
 > the model with `hp` left out.
 
-```{r include = include}
+```{r }
 update(mc, reflevel = "gr")
 ``` 
 
@@ -267,7 +261,7 @@ households are less concerned with installation costs than lower
 income households. Does dividing installation cost by income seem to
 make the model better or worse?
 
-```{r include = include}
+```{r }
 mi <- mlogit(depvar ~ oc + I(ic / income), H)
 summary(mi)
 ```   
@@ -282,7 +276,7 @@ alternative-specific income effects.  What do the estimates imply
 about the impact of income on the choice of central systems versus
 room system? Do these income terms enter significantly?
 
-```{r include = include}
+```{r }
 mi2 <- mlogit(depvar ~ oc + ic | income, H, reflevel = "hp")
 ```
 
@@ -298,7 +292,7 @@ mi2 <- mlogit(depvar ~ oc + ic | income, H, reflevel = "hp")
 > family that lives in the house, whereas the builder made decision of
 > which system to install.
 
-```{r include = include}
+```{r }
 lrtest(mc, mi2)
 waldtest(mc, mi2)
 scoretest(mc, mi2)
@@ -316,7 +310,7 @@ and alternative specific constants. Calculate the probabilities for
 each house explicitly. Check to be sure that the mean probabilities
 are the same as you got in exercise 4.
 
-```{r include = include}
+```{r }
 X <- model.matrix(mc)
 alt <- idx(mc, 2)
 chid <- idx(mc, 1)
@@ -333,7 +327,7 @@ apply(P, 2, mean)
 > probabilities for all the alternatives (and not only the chosen one)
 > is returned.
 
-```{r include = include}
+```{r }
 apply(fitted(mc, outcome = FALSE), 2, mean)
 ``` 
 
@@ -346,7 +340,7 @@ calculate new probabilities and predicted shares using the new
 installation cost of heat pump. How much do the rebates raise the
 share of houses with heat pumps?  
 
-```{r include = include}
+```{r }
 Hn <- H
 Hn[idx(Hn, 2) == "hp", "ic"] <- 0.9 * Hn[idx(Hn, 2) == "hp", "ic"]
 apply(predict(mc, newdata = Hn), 2, mean)
@@ -372,7 +366,7 @@ the reduced cost in exercise 7.) What is the predicted market share
 for the new technology? From which of the original five systems does
 the new technology draw the most customers? 
 
-```{r include = include}
+```{r }
 X <- model.matrix(mc)
 Xn <- X[idx(mc, 2) == "ec",]
 Xn[, "ic"] <- Xn[, "ic"] + 200
@@ -387,7 +381,7 @@ SeXb <- as.numeric(tapply(eXb, sort(chidb), sum))
 P <- eXb / SeXb[sort(chidb)]
 P <- matrix(P, ncol = 6, byrow = TRUE)
 apply(P, 2, mean)
-```   
+``` 
 
 > The new technology captures a market share of 0.1036. That is, it gets
 > slightly more than ten percent of the market.

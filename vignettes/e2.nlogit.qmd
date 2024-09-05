@@ -2,12 +2,6 @@
 title: "Exercise 2: Nested logit model"
 author: Kenneth Train and Yves Croissant
 date: '`r Sys.Date()`'
-output: 
-  pdf_document:
-    number-sections: true
-  html_document:
-    toc: true
-    toc_float: true
 vignette: >
   %\VignetteIndexEntry{Exercise 2: Nested logit model}
   %\VignetteEngine{quarto::pdf}
@@ -53,7 +47,8 @@ specified to have the cooling alternatives (`gcc}, `ecc},
 `erc}, `hpc}) in one nest and the non-cooling alternatives
 (`gc}, `ec}, `er}) in another nest.
 
-```{r nest1}
+```{r}
+#| label: nest1
 library("mlogit")
 data("HC", package = "mlogit")
 HC <- dfidx(HC, varying = c(2:8, 10:16), choice = "depvar")
@@ -129,12 +124,13 @@ across alternatives? Do you think the estimate is plausible?
 
 (b) Is the log-sum coefficient significantly different from 1?
 
-\begin{answer}[5]
-  The t-statistic is :
-```{r tstat}
+>  The t-statistic is:
+
+```{r}
+#| label: tstat
  (coef(nl2)['iv'] - 1) / sqrt(vcov(nl2)['iv', 'iv'])
 lrtest(nl2, ml)
-```   
+``` 
 
 > We cannot reject the hypothesis at standard confidence levels.
 
@@ -155,7 +151,8 @@ logLik(nl2)
 the non-cooling alternatives in the other nest (like for exercise 1),
 with a separate log-sum coefficient for each nest.
 
-```{r nl3}
+```{r}
+#| label: nl3
 nl3 <- update(nl, un.nest.el = FALSE)
 ```
 
@@ -177,7 +174,8 @@ exercise 1 is the true model?
 > We can use a likelihood ratio tests with models `nl` and
 > `nl3`.
 
-```{r lrtest1}
+```{r}
+#| label: lrtest1
 lrtest(nl, nl3)
 ```   
 
@@ -196,7 +194,8 @@ nests. Estimate a model with alternatives `gcc`, `ecc` and
 worse than the model in exercise 1, which puts alternative `hpc` in
 the same nest as alternatives `gcc`, `ecc` and `erc`?
 
-```{r threentest}
+```{r}
+#| label: threentest
 nl4 <- update(nl, nests=list(n1 = c('gcc', 'ecc', 'erc'), n2 = c('hpc'),
                     n3 = c('gc', 'ec', 'er')))
 summary(nl4)

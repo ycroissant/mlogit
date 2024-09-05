@@ -20,6 +20,7 @@
 #'     and the gradient are also printed.
 #' @param constPar a numeric or a character vector which indicates
 #'     that some parameters should be treated as constant,
+#' @param x an `est.stat` object
 #' @param ... further arguments passed to `f`.
 #'
 #' @details

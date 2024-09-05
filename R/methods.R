@@ -69,6 +69,7 @@ model.matrix.mlogit <- function(object, ...){
 }
 
 #' @rdname miscmethods.mlogit
+#' @method model.response mlogit
 #' @export
 model.response.mlogit <- function(object, ...){
     y.name <- paste(deparse(object$formula[[2]]))
@@ -329,7 +330,6 @@ coef.summary.mlogit <- function(object, ...){
 #' @examples
 #' 
 #' data("Fishing", package = "mlogit")
-#' library("zoo")
 #' Fish <- mlogit.data(Fishing, varying = c(2:9), shape = "wide", choice = "mode")
 #' m <- mlogit(mode ~ price | income | catch, data = Fish)
 #' # compute a data.frame containing the mean value of the covariates in
@@ -532,7 +532,7 @@ summary.vcov.mlogit <- function(object, ...){
         K <- length(nrpar)
         type <- attr(object, "type")
         diag <- ifelse(type == "cov", "var", "sd")
-        nstruct <- names.rpar(nrpar, prefix = type, diag = diag, unique = TRUE)
+        nstruct <- names_rpar(nrpar, prefix = type, diag = diag, unique = TRUE)
     }
     else{
         coefs <- object
@@ -773,15 +773,17 @@ logsum <- function(coef, X = NULL, formula = NULL, data = NULL,
     coefsubset <- intersect(names(beta), colnames(X))
     X <- X[, coefsubset, drop = FALSE]
     .idx$linpred <- as.numeric(crossprod(t(X[, coefsubset, drop = FALSE]), beta[coefsubset]))
-            
+
     group_name <- idx_name(.idx, 2, 2)
+    alt_name <- idx_name(.idx, 2, 1)
+    chid_name <- idx_name(.idx, 1, 1)
     if (! is.null(group_name) & (is.null(type) || type == "group")){
         iv <- log(tapply(exp(.idx$linpred), list(dfidx::idx(.idx, 1), .idx[[group_name]]), sum))
         if (output == "obs"){
             iv <- data.frame(chid = rep(rownames(iv), each = ncol(iv)),
                              group = rep(colnames(iv), nrow(iv)),
                              iv = as.numeric(t(iv)))
-            names(iv)[2] <- group_name
+            names(iv)[1:2] <- c(chid_name, group_name)
             iv <- merge(.idx, iv)
             iv <- iv[order(iv$nb), "iv"]
         }
@@ -793,6 +795,7 @@ logsum <- function(coef, X = NULL, formula = NULL, data = NULL,
         iv <- log(tapply(exp(.idx$linpred), dfidx::idx(.idx, 1), sum, na.rm = TRUE))
         if (output == "obs"){
             iv <- data.frame(chid = rownames(iv), iv = as.numeric(iv))
+            names(iv)[1] <- c(chid_name)
             iv <- merge(.idx, iv)
             iv <- iv[order(iv$nb), "iv"]
         }

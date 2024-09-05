@@ -13,10 +13,6 @@ scoretest(object, ...)
 \method{scoretest}{mlogit}(object, ...)
 
 \method{scoretest}{default}(object, ...)
-
-\method{waldtest}{mlogit}(object, ...)
-
-\method{lrtest}{mlogit}(object, ...)
 }
 \arguments{
 \item{object}{an object of class \code{mlogit} or a formula,}

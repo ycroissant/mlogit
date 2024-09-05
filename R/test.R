@@ -73,37 +73,37 @@ hmftest <- function(x,...){
 #' @method hmftest formula
 #' @export
 hmftest.formula <- function(x, alt.subset, ...){
-  formula <- x
-  x <- mlogit(formula,...)
-  x$call$data <- match.call()$data
-  xs <- mlogit(formula, alt.subset = alt.subset, ...)
-  hmftest(x,xs)
+    formula <- x
+    x <- mlogit(formula,...)
+    x$call$data <- match.call()$data
+    xs <- mlogit(formula, alt.subset = alt.subset, ...)
+    hmftest(x,xs)
 }
 
 #' @rdname hmftest
 #' @method hmftest mlogit
 #' @export
 hmftest.mlogit <- function(x, z, ...){
-  if (is.character(z)) xs <- update(x, alt.subset = z)
-  if (inherits(z, "mlogit")) xs <- z
-  coef.x <- coef(x)
-  coef.s <- coef(xs)
-  un <- names(coef.x) %in% names(coef.s)
-  diff.coef <- coef.s - coef.x[un]
-  diff.var <- vcov(xs) - vcov(x)[un, un]
-  hmf <- as.numeric(diff.coef %*% solve(diff.var) %*% diff.coef)
-  names(hmf) <- "chisq"
-  df <- sum(un)
-  names(df) <- "df"
-  pv <- pchisq(hmf, df = df, lower.tail = FALSE)
-  res <- list(data.name = x$call$data,
-              statistic = hmf,
-              p.value =pv,
-              parameter = df,
-              method = "Hausman-McFadden test",
-              alternative = "IIA is rejected")
-  class(res) <- "htest"
-  res
+    if (is.character(z)) xs <- update(x, alt.subset = z)
+    if (inherits(z, "mlogit")) xs <- z
+    coef.x <- coef(x)
+    coef.s <- coef(xs)
+    un <- names(coef.x) %in% names(coef.s)
+    diff.coef <- coef.s - coef.x[un]
+    diff.var <- vcov(xs) - vcov(x)[un, un]
+    hmf <- as.numeric(diff.coef %*% solve(diff.var) %*% diff.coef)
+    names(hmf) <- "chisq"
+    df <- sum(un)
+    names(df) <- "df"
+    pv <- pchisq(hmf, df = df, lower.tail = FALSE)
+    res <- list(data.name = x$call$data,
+                statistic = hmf,
+                p.value =pv,
+                parameter = df,
+                method = "Hausman-McFadden test",
+                alternative = "IIA is rejected")
+    class(res) <- "htest"
+    res
 }  
 
 
@@ -346,21 +346,31 @@ scoretest.default <- function(object, ...){
     result
 }
 
-#' @rdname scoretest
+#' @importFrom lmtest waldtest
+#' @export
+lmtest::waldtest
+
+#' @importFrom lmtest lrtest
+#' @export
+lmtest::lrtest
+
+#' @method waldtest mlogit
 #' @export
 waldtest.mlogit <- function(object, ...){
+
     objects <- list(object, ...)
     margs <- c('nests', 'un.nest.el', 'unscaled', 'heterosc', 'rpar',
                'R', 'correlation', 'halton', 'random.nb', 'panel')
     mlogit.args <- objects[names(objects) %in% margs]
     if (!is.null(names(objects))) objects <- objects[!(names(objects) %in% margs)]
     nmodels <- length(objects)
+#    print(nmodels)
     specific.computation <- FALSE
     # if several models are provided, just use the default method
     if (nmodels > 1){
         return(waldtest.default(object, ...))
     }
-    
+#    stop("ca roule")
     K <- length(colnames(model.matrix(object)))
     L <- length(object$freq)
     
@@ -499,7 +509,7 @@ waldtest.mlogit <- function(object, ...){
     result
 }
 
-#' @rdname scoretest
+#' @method lrtest mlogit
 #' @export
 lrtest.mlogit <- function(object, ...){
     dots <- list(...)
@@ -512,11 +522,3 @@ lrtest.mlogit <- function(object, ...){
     }
     else lrtest.default(object, ...)
 }
-
-#' @importFrom lmtest waldtest
-#' @export
-lmtest::waldtest
-
-#' @importFrom lmtest lrtest
-#' @export
-lmtest::lrtest
