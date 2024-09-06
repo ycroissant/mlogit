@@ -1,9 +1,9 @@
 Package: mlogit
 Version: 1.1-2
-Date: 2024-09-04
+Date: 2024-09-06
 Title: Multinomial Logit Models
 Authors@R: person("Yves", "Croissant", role = c("aut", "cre"), email = "yves.croissant@univ-reunion.fr")
-Depends: R (>= 2.10), dfidx
+Depends: R (>= 2.10)
 Imports: Formula, lmtest, statmod, Rdpack
 Suggests: knitr, car, nnet, lattice, AER, ggplot2, quarto, modelsummary
 Description: Maximum likelihood estimation of random utility discrete

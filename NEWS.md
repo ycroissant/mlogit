@@ -1,5 +1,8 @@
 # mlogit 1.1-2
 
+* mlogit doesn't depends on dfidx anymore, dfidx, idx and idx_name are
+  re-exported
+
 * in logsum, bug fix, the names of the indexes used to be alt and chid
 
 * in the vignette, dfidx now use tibbles instead of ordinary data

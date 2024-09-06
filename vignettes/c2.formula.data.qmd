@@ -147,13 +147,10 @@ coerce the original data frame to a tibble before using `dfidx`:
 
 ```{r}
 #| label: "dfidx with tibble"
-Tr <- Train %>% as_tibble %>%
-    dfidx(shape = "wide", varying = 4:11, sep = "_",
-          idx = list(c("choiceid", "id")), idnames = c(NA, "alt"))
+Tr <- dfidx(as_tibble(Train), shape = "wide", varying = 4:11, sep = "_",
+            idx = c(id = "choiceid"), idnames = c(NA, "alt"))
 Tr
 ```
-
-
 
 ### Long format
 

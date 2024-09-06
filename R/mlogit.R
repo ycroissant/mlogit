@@ -1,3 +1,19 @@
+#' @importFrom dfidx dfidx
+#' @export
+dfidx::dfidx
+
+#' @importFrom dfidx idx
+#' @export
+dfidx::idx
+
+#' @importFrom dfidx idx_name
+#' @export
+dfidx::idx_name
+
+#' @importFrom dfidx as_tibble
+#' @export
+dfidx::as_tibble
+
 #' Multinomial logit model
 #' 
 #' Estimation by maximum likelihood of the multinomial logit model,
@@ -6,7 +22,7 @@
 #' @name mlogit
 #' @aliases mlogit
 #' @import Formula
-#' @import dfidx
+#' @importFrom dfidx unfold_idx
 #' @importFrom stats as.formula coef dlnorm dnorm formula logLik
 #' @importFrom stats model.frame model.matrix model.response
 #' @importFrom stats na.omit pchisq plnorm pnorm predict
