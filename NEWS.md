@@ -1,5 +1,11 @@
 # mlogit 1.1-2
 
+* a df.residual element is added to the result, the df.residual method
+  is removed
+
+* a bug in residuals.mlogit is fixed, probabilities is used instead of
+  fitted
+
 * mlogit doesn't depends on dfidx anymore, dfidx, idx and idx_name are
   re-exported
 

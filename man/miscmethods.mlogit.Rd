@@ -22,8 +22,6 @@
 \usage{
 \method{residuals}{mlogit}(object, outcome = TRUE, ...)
 
-\method{df.residual}{mlogit}(object, ...)
-
 \method{terms}{mlogit}(x, ...)
 
 \method{model.matrix}{mlogit}(object, ...)
@@ -63,13 +61,6 @@
   ...
 )
 
-\method{coef}{mlogit}(
-  object,
-  subset = c("all", "iv", "sig", "sd", "sp", "chol"),
-  fixed = FALSE,
-  ...
-)
-
 \method{coef}{summary.mlogit}(object, ...)
 }
 \arguments{
@@ -103,6 +94,8 @@ correlation matrix and the standard deviations,}
 
 \item{returnData}{for the \code{predict} method, if \code{TRUE}, the data is
 returned as an attribute,}
+
+\item{confint, conflevel}{see tidy}
 
 \item{subset}{an optional vector of coefficients to extract for the
 \code{coef} method,}

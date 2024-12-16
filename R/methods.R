@@ -1,3 +1,53 @@
+## #' @rdname miscmethods.mlogit
+## #' @export
+## coef.mlogit <- function(object,
+##                         subset = c("all", "iv", "sig", "sd", "sp", "chol"),
+##                         fixed = FALSE, ...){
+##     whichcoef <- match.arg(subset)
+##     result <- object$coefficients
+##     ncoefs <- names(result)
+##     # first remove the fixed coefficients if required
+##     if (! fixed) result <- result[! attr(result, "fixed")]
+##     attr(result, "fixed") <- NULL
+##     if (whichcoef == "all") selcoef <- 1:length(result)
+##     else selcoef <- grep(whichcoef, ncoefs)
+##     result[selcoef]
+## }
+
+## #' @rdname miscmethods.mlogit
+## #' @method tidy mlogit
+## #' @export
+## tidy.mlogit <- function (x, conf.int = FALSE, conf.level = 0.95, ...) 
+## {
+##     check_ellipses("exponentiate", "tidy", "mlogit", ...)
+##     s <- summary(x)
+##     ret <- as_tidy_tibble(s$CoefTable, new_names = c("estimate", 
+##         "std.error", "statistic", "p.value"))
+##     if (conf.int) {
+##         ci <- broom_confint_terms(x, level = conf.level)
+##         ret <- dplyr::left_join(ret, ci, by = "term")
+##     }
+##     ret
+## }
+
+## #' @importFrom generics tidy
+## #' @export
+## generics::tidy
+
+
+#coef.mlogit <- micsr:::coef.micsr
+#select_coef <- micsr:::select_coef
+
+## #' @rdname miscmethods.mlogit
+## #' @export
+## df.residual.mlogit <- function(object, ...){
+##     n <- length(residuals(object))
+##     K <- length(coef(object))
+##     n - K
+## }
+
+
+
 #' Methods for mlogit objects
 #'
 #' Miscellaneous methods for `mlogit` objects.
@@ -9,6 +59,7 @@
 #'     predict.mlogit fitted.mlogit coef.mlogit
 #'     coef.summary.mlogit
 #' @param x,object an object of class `mlogit`
+#' @param confint,conflevel see tidy
 #' @param subset an optional vector of coefficients to extract for the
 #'     `coef` method,
 #' @param digits the number of digits,
@@ -46,14 +97,6 @@ residuals.mlogit <- function(object, outcome = TRUE, ...){
         result <- apply(y * object$residuals, 1, sum)
     }
     result
-}
-
-#' @rdname miscmethods.mlogit
-#' @export
-df.residual.mlogit <- function(object, ...){
-    n <- length(residuals(object))
-    K <- length(coef(object))
-    n - K
 }
 
 #' @rdname miscmethods.mlogit
@@ -276,21 +319,6 @@ fitted.mlogit <- function(object, type = c("outcome", "probabilities",
     result
 }
 
-#' @rdname miscmethods.mlogit
-#' @export
-coef.mlogit <- function(object,
-                        subset = c("all", "iv", "sig", "sd", "sp", "chol"),
-                        fixed = FALSE, ...){
-    whichcoef <- match.arg(subset)
-    result <- object$coefficients
-    ncoefs <- names(result)
-    # first remove the fixed coefficients if required
-    if (! fixed) result <- result[! attr(result, "fixed")]
-    attr(result, "fixed") <- NULL
-    if (whichcoef == "all") selcoef <- 1:length(result)
-    else selcoef <- grep(whichcoef, ncoefs)
-    result[selcoef]
-}
     
 #' @rdname miscmethods.mlogit
 #' @method coef summary.mlogit
@@ -486,7 +514,10 @@ vcov.mlogit <- function(object,
         }
         else{
             # correlated parameters
-            coefs <- coef(object, subset = "chol")
+            # NEW_COEF
+#            coefs <- coef(object, subset = "chol")
+            chol_coefs <- grep("chol", names(coef(object)))
+            coefs <- coef(object)[chol_coefs]
             ncoefs <- names(coefs)
             # compute the vcov matrix of random parameters
             result <- tcrossprod(ltm(coefs, to = "ltm"))

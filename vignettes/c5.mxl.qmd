@@ -485,15 +485,13 @@ convloc + clientele | 0, data = RT, weights = weight,
 rpar = c(cost = 'zbt', risk = 'zbt'), R = 100, halton = NA, panel = TRUE)
 ``` 
 
-The results are presented in @tab-risktr.
+The results are presented in @tbl-risktr.
 
 
 ```{r}
-#| label: "results for RiskyTransport"
-#| results: "asis"
-modelsummary::msummary(list('Multinomial logit' = ml.rt, 'Mixed logit' = mx.rt),
-                       label = "tab-risktr",
-                       title = "Transportation choices.")
+#| label: tbl-risktr
+#| tbl-cap: "Transportation choices."
+modelsummary::msummary(list('Multinomial logit' = ml.rt, 'Mixed logit' = mx.rt))
 ``` 
 
 Not that the log-likelihood is much larger for the mixed effect logit.

@@ -110,11 +110,11 @@ mlogit.data <- function (data, choice = NULL, shape = c("long", "wide"), varying
  
     # Run dfidx with these values
 
-    data <- dfidx::dfidx(data = data, dfa$idx, drop.index = dfa$drop.index, as.factor = dfa$as.factor,
-                         pkg = "mlogit", fancy.row.names = dfa$fancy.row.names,
-                         idnames = dfa$idnames, shape = dfa$shape,
-                         choice = dfa$choice, varying = dfa$varying,
-                         sep = dfa$sep, opposite = dfa$opposite,
+    data <- dfidx(data = data, dfa$idx, drop.index = dfa$drop.index, as.factor = dfa$as.factor,
+                  pkg = "mlogit", fancy.row.names = dfa$fancy.row.names,
+                  idnames = dfa$idnames, shape = dfa$shape,
+                  choice = dfa$choice, varying = dfa$varying,
+                  sep = dfa$sep, opposite = dfa$opposite,
                   levels = dfa$levels, ranked = dfa$ranked)
     # add mlogit.data for backward compatibility with gmnl
     class(data) <- c(class(data), "mlogit.data")

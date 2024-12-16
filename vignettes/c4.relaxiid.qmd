@@ -369,8 +369,13 @@ The results of the fitted models are presented in @tbl-nlogit.
 ```{r}
 #| label: tbl-nlogit
 #| tbl-cap: "Choice by Japanese firms of a european region."
+## modelsummary::msummary(list('Mult. logit' = ml.fdi,
+##                             'Lower model' = lm.fdi,
+##                             'Upper model' = um.fdi,
+##                             'Upper model' = um2.fdi,
+##                             'Nested logit' = nl.fdi,
+##                             'Nested logit' = nl2.fdi))
 modelsummary::msummary(list('Mult. logit' = ml.fdi,
-                            'Lower model' = lm.fdi,
                             'Upper model' = um.fdi,
                             'Upper model' = um2.fdi,
                             'Nested logit' = nl.fdi,

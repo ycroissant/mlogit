@@ -1,3 +1,6 @@
+
+
+
 #' @importFrom dfidx dfidx
 #' @export
 dfidx::dfidx
@@ -29,7 +32,7 @@ dfidx::as_tibble
 #' @importFrom stats printCoefmat punif qlnorm qnorm qunif
 #' @importFrom stats relevel reshape residuals rnorm runif
 #' @importFrom stats terms update vcov dunif effects
-#' @importFrom statmod gauss.quad
+#' @importFrom micsr gaussian_quad
 #' @param formula a symbolic description of the model to be estimated,
 #' @param data the data: an `mlogit.data` object or an ordinary
 #'     `data.frame`,
@@ -277,6 +280,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # 2 ################################################################
     # Run dfidx (or mlogit.data for backward compatibility) if necessary
     ####################################################################
+    
     # check if any of the mlogit.data argument is present
     
     common_args <- c("data", "drop.index", "shape",
@@ -302,7 +306,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     if (to_dfidx & to_mlogit.data)
         stop("some specificic arguments of mlogit.data and dfidx are introduced")
 
-    # it data is an ordinary data.frame, run dfidx or mlogit.data
+    # if data is an ordinary data.frame, run dfidx or mlogit.data
 
     if (is_data.frame){
         if (to_mlogit.data){
@@ -336,13 +340,13 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
                 # Replace the relevant values by those indicated in mlogit
                 dfa[names(mldata)[-1]] <- as.list(mldata)[- 1]
                 # Run dfidx with these values
-                data <- dfidx::dfidx(data = data, dfa$idx, drop.index = dfa$drop.index,
-                                     as.factor = dfa$as.factor,
-                                     pkg = dfa$pkg, fancy.row.names = dfa$fancy.row.names,
-                                     idnames = dfa$idnames, shape = dfa$shape,
-                                     choice = dfa$choice, varying = dfa$varying,
-                                     sep = dfa$sep, opposite = dfa$opposite,
-                                     levels = dfa$levels, ranked = dfa$ranked)
+                data <- dfidx(data = data, dfa$idx, drop.index = dfa$drop.index,
+                              as.factor = dfa$as.factor,
+                              pkg = dfa$pkg, fancy.row.names = dfa$fancy.row.names,
+                              idnames = dfa$idnames, shape = dfa$shape,
+                              choice = dfa$choice, varying = dfa$varying,
+                              sep = dfa$sep, opposite = dfa$opposite,
+                              levels = dfa$levels, ranked = dfa$ranked)
             }
         }
     }
@@ -353,6 +357,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # 3 ######################################################
     # compute the model.frame
     ##########################################################
+
     attr(data, "clseries") <- c("xseries_mlogit", "xseries")
     mf <- callT
     mf$data <- data
@@ -369,12 +374,14 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # mlogit needs balanced data
     mf$balanced <- TRUE
     mf <- eval(mf, parent.frame())
+    
     # 4 ###########################################################
     # get the dimensions of the model
     ###############################################################
-    .idx <- dfidx::idx(mf)
-    alt <- dfidx::idx(mf, 2)
-    chid <- dfidx::idx(mf, 1)
+
+    .idx <- idx(mf)
+    alt <- idx(mf, 2)
+    chid <- idx(mf, 1)
     alt.lev <- levels(alt[drop = TRUE])
     # model.frame_dfidx returns an alt.ordering attribute which
     # contains the levels of the second index in their initial order,
@@ -402,7 +409,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # extract the individual index if it is relevant
     if (panel){
         if (! mixed.logit) stop("panel is only relevant for mixed logit models")
-        id <- dfidx::idx(mf, 1, 2)
+        id <- idx(mf, 1, 2)
         if (is.null(id)) stop("no individual index")
         # construct a data.frame with all the unique chids and the corresponding id
         #YC ????
@@ -438,7 +445,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     X <- model.matrix(mf, rhs = 1:3)
     formula <- cformula
     K <- ncol(X)
-    df.residual <- N - K
+    .df.residual <- N - K
     colnamesX <- colnames(X)
 
     # extract the response and coerce it to a logical
@@ -491,7 +498,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
 
     if (nested.logit){
         if (is.logical(nests) && nests){
-            group_var <- dfidx::idx(mf, 2, 2)
+            group_var <- idx(mf, 2, 2)
             if (is.null(group_var)) stop("no grouping variable")
             else{
                 nests <- unique(data.frame(alt = as.character(alt),
@@ -576,7 +583,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     if (probit)
         opt[c('logLik', 'X', 'y')] <- list(as.name('lnl.mprobit'), as.name('DX'), as.name('yv'))
     if (heterosc.logit){
-        rn <- gauss.quad(R, kind = "laguerre")
+        rn <- gaussian_quad(R, kind = "laguerre")
         opt[c('logLik', 'rn')] <- list(as.name('lnl.hlogit'), as.name('rn'))
     }
     if (nested.logit)
@@ -649,7 +656,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     fitted <- attr(x$optimum, "fitted")
     probabilities <- attr(x$optimum, "probabilities")
     linpred <- attr(x$optimum, "linpred")
-    resid <- Reduce("cbind", yl) - fitted
+    resid <- Reduce("cbind", yl) - probabilities
     attr(x$coefficients, "fixed") <- attr(x$optimum, "fixed")
     attr(x$coefficients, "sup") <- names.sup.coef
     gradient <- - attr(x$optimum, "gradi")
@@ -707,6 +714,11 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     }
     if (wlogit) Omega <- NA
 
+    # add the npar element
+    npar <- structure(c(covariates = K,
+                        vcov = length(x$coefficients) - K),
+                      default = c("covariates", "vcov"))
+    
     mf$probabilities <- as.numeric(t(probabilities))
     if (! is.null(linpred)) mf$linpred <- as.numeric(t(linpred))
     result <- structure(
@@ -716,8 +728,10 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
             gradient      = gradient,
             hessian       = hessian,
             est.stat      = x$est.stat,
+            npar          = npar,
             fitted.values = fitted,
             probabilities = probabilities,
+            df.residual   = nrow(resid) - length(x$coefficients),
             linpred       = linpred,
             indpar        = indpar,
             residuals     = resid,
@@ -728,8 +742,10 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
             freq          = freq,
             formula       = formula,
             call          = callT),
-        class = 'mlogit'
-    ) 
+# NEWCOEF        
+        class = c("mlogit", "micsr")
+#        class = "mlogit"
+        ) 
     result
 }
 
@@ -778,12 +794,12 @@ mlogit.start <- function(formula, data, mf, start = NULL, un.nest.el = FALSE,
     heterosc.logit <- mt['heterosc']
     mixed.logit <- mt['mixed']
 
-    alt <- dfidx::idx(mf, 2)
+    alt <- idx(mf, 2)
     
     # extract the X and eventually Xs matrix
     if (length(formula)[2] == 4){
         sformula <- formula(as.Formula(formula), rhs = 4)
-        Xs <- model.matrix(sformula, as.data.frame(mf))[! duplicated(dfidx::idx(mf, 1)), - 1]
+        Xs <- model.matrix(sformula, as.data.frame(mf))[! duplicated(idx(mf, 1)), - 1]
 #        Xs <- model.matrix(sformula, mf)[! duplicated(index(mf)$chid), - 1]
 #        formula <- mFormula(formula(as.Formula(formula), rhs = 1:3))
         formula <- Formula(formula(formula, rhs = 1:3))
@@ -801,12 +817,12 @@ mlogit.start <- function(formula, data, mf, start = NULL, un.nest.el = FALSE,
     names.sup.coef <- character(0)
     if (nested.logit){
         if (is.logical(nests) && nests){
-            if (is.null(dfidx::idx(mf, 2, 2))){
+            if (is.null(idx(mf, 2, 2))){
                 stop("no grouping variable")
             }
             else{
-                nests <- unique(data.frame(alt = as.character(dfidx::idx(mf, 2)),
-                                           group = dfidx::idx(mf, 2, 2)))
+                nests <- unique(data.frame(alt = as.character(idx(mf, 2)),
+                                           group = idx(mf, 2, 2)))
                 nests <- split(nests$alt, nests$group)
             }
         }
