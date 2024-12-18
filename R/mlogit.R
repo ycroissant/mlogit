@@ -1,6 +1,3 @@
-
-
-
 #' @importFrom dfidx dfidx
 #' @export
 dfidx::dfidx
@@ -221,7 +218,7 @@ dfidx::as_tibble
 #' \dontrun{
 #' rpl <- mlogit(mode ~ price + catch | income, Fishing, varying = 2:9,
 #'               rpar = c(price= 'n', catch = 'n'), correlation = TRUE,
-#'               alton = NA, R = 50)
+#'               halton = NA, R = 50)
 #' summary(rpl)
 #' rpar(rpl)
 #' cor.mlogit(rpl)
@@ -369,7 +366,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # data, then formula
     mf$formula <- data
     mf$data <- formula
-# why specifying the method ?    mf[[1L]] <- as.name("model.frame.dfidx")
+    # why specifying the method ?    mf[[1L]] <- as.name("model.frame.dfidx")
     mf[[1L]] <- as.name("model.frame")
     # mlogit needs balanced data
     mf$balanced <- TRUE
@@ -531,7 +528,6 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
 
     # construct the call for mlogit.optim
     opt <- callT
-
     # if constPar is numeric, insert the relevant value in the start
     # vector and transform the constPar vector to character
     if (! is.null(opt$constPar)){
@@ -583,7 +579,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     if (probit)
         opt[c('logLik', 'X', 'y')] <- list(as.name('lnl.mprobit'), as.name('DX'), as.name('yv'))
     if (heterosc.logit){
-        rn <- gaussian_quad(R, kind = "laguerre")
+        rn <- micsr::gaussian_quad(R, kind = "laguerre")
         opt[c('logLik', 'rn')] <- list(as.name('lnl.hlogit'), as.name('rn'))
     }
     if (nested.logit)
@@ -591,15 +587,22 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
             list(as.name('lnl.nlogit'), as.name('nests'),
                  as.name('un.nest.el'), as.name('unscaled'))
     x <- eval(opt, sys.frame(which = nframe))
+
+    # Construct a logLik function with only one argument
+    lnl.args <- unique(Reduce("c",
+                              lapply(list(lnl.mprobit, lnl.slogit, lnl.wlogit,
+                                          lnl.rlogit, lnl.hlogit, lnl.nlogit),
+                                     function(x) names(formals(x)))))
+    m <- match(c(lnl.args, "logLik"), names(opt), 0L)
+    opt <- opt[c(1L, m)]
+    opt[[1]] <- opt$logLik
+    opt$logLik <- NULL
+    
     # compute the probabilities for all the alternatives for
     # heteroscedastic and the probit model
     if (probit | heterosc){
-        opt$logLik <- opt$iterlim <- opt$method <- opt$print.level <- opt$tol <- opt$constPar <- NULL
-        names(opt)[[2]] <- 'param'
-        opt[[2]] <- x$coefficients
+        opt$param <- x$coefficients
         opt$gradient <- FALSE
-        opt[[1]] <- as.name('lnl.hlogit')
-        if (probit) opt[[1]] <- as.name('lnl.mprobit') else opt[[1]] <- as.name('lnl.hlogit')
         probabilities <- c()
         for (k in 1:J){
             if (probit){
@@ -651,15 +654,23 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
 #    if (! nested.logit) nests <- NULL
 
     # if no hessian is returned, use the BHHH approximation
-    if (is.null(attr(x$optimum, 'hessian'))) hessian <- - crossprod(attr(x$optimum, 'gradi'))
-    else hessian <- - attr(x$optimum, 'hessian')
+    if (is.null(attr(x$optimum, 'hessian'))){
+        opt[["param"]] <- as.name("param")
+        names(opt)[which(names(opt) == "param")] <- ""
+        fun <- function(param) as.numeric(eval(opt))
+        hessian <- - numDeriv::hessian(fun, x$coefficients)
+    } else hessian <- - attr(x$optimum, 'hessian')
+
     fitted <- attr(x$optimum, "fitted")
     probabilities <- attr(x$optimum, "probabilities")
     linpred <- attr(x$optimum, "linpred")
+
+
     resid <- Reduce("cbind", yl) - probabilities
     attr(x$coefficients, "fixed") <- attr(x$optimum, "fixed")
     attr(x$coefficients, "sup") <- names.sup.coef
     gradient <- - attr(x$optimum, "gradi")
+
     if (mixed.logit) indpar <- attr(x$optimum, "indpar") else indpar <- NULL
     
     # Compute the covariance matrix of the errors

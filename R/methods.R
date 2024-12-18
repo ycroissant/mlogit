@@ -464,7 +464,7 @@ effects.mlogit <- function(object, covariate = NULL,
 #' @keywords regression
 vcov.mlogit <- function(object,
                         what = c('coefficient', 'errors', 'rpar'),
-                        subset = c("all", "iv", "sig", "sd", "sp", "chol"),
+                        subset = c("all", "iv", "sig", "sd", "sp", "chol", "covariates", "vcov"),
                         type = c('cov', 'cor', 'sd'),
                         reflevel = NULL, ...){
     whichcoef <- match.arg(subset)

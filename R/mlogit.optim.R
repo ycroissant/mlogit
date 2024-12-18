@@ -136,9 +136,11 @@ mlogit.optim <- function(logLik, start,
     f$stptol <- steptol
     if (method == 'nr') f$hessian <- TRUE else f$hessian <- FALSE
     f[[2]] <- NULL
+    .f <- f
     names(f)[2] <- 'param'
     # eval a first time the function, the gradient and the hessian
     x <- eval(f, parent.frame())
+
     # set to TRUE to check the analytical gradient
     if (FALSE){
         nd <- f
@@ -178,7 +180,6 @@ mlogit.optim <- function(logLik, start,
             code <- 4
             break
         }
-
         # indicate in the call the previous parameters vector, the
         # direction and the value of the function
         f$param <- param
@@ -239,8 +240,8 @@ mlogit.optim <- function(logLik, start,
     if (code == 3) x <- oldx
     names(attr(x, 'gradient')) <- colnames(attr(x, 'gradi')) <- names(param)
     attr(x, "fixed") <- fixed
-    est.stat = structure(list(elaps.time = NULL, nb.iter = i, eps = chi2,
-                              method = method, code = code), class = 'est.stat')
+    est.stat <- structure(list(elaps.time = NULL, nb.iter = i, eps = chi2,
+                               method = method, code = code), class = 'est.stat')
     result <- list(optimum = x,
                    coefficients = param,
                    est.stat = est.stat
@@ -300,3 +301,4 @@ print.est.stat <- function(x, ...){
     }
     else cat(paste(x$code, "\n"))
 }
+

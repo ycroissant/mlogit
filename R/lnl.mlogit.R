@@ -541,4 +541,3 @@ lnl.mprobit <- function(param, y, X, weights = NULL,
     }
     lnl
 }
-
