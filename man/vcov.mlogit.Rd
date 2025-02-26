@@ -9,11 +9,15 @@
 \usage{
 \method{vcov}{mlogit}(
   object,
+  ...,
+  vcov = NULL,
   what = c("coefficient", "errors", "rpar"),
-  subset = c("all", "iv", "sig", "sd", "sp", "chol"),
+  subset = NA,
+  fixed = FALSE,
+  grep = NULL,
+  invert = TRUE,
   type = c("cov", "cor", "sd"),
-  reflevel = NULL,
-  ...
+  reflevel = NULL
 )
 
 \method{print}{vcov.mlogit}(x, ...)
@@ -31,14 +35,15 @@
 \item{object}{a \code{mlogit} object (and a \code{vcov.mlogit} for the
 summary method),}
 
+\item{...}{further arguments.}
+
+\item{vcov, subset, fixed, grep, }{invert see the \code{micsr} method}
+
 \item{what}{indicates which covariance matrix has to be extracted : the
 default value is \code{coefficients}, in this case, \code{vcov} behaves as
 usual. If \code{what} equals \code{errors} the covariance matrix of the
 errors of the model is returned. Finally, if \code{what} equals \code{rpar},
 the covariance matrix of the random parameters are extracted,}
-
-\item{subset}{the subset of the coefficients that have to be extracted (only
-relevant if \code{what} \verb{ = "coefficients"}),}
 
 \item{type}{with this argument, the covariance matrix may be returned (the
 default) ; the correlation matrix with the standard deviation on the
@@ -48,8 +53,6 @@ diagonal may also be extracted,}
 probit model ; in this case the covariance matrix is of error differences is
 returned and, with this argument, the alternative used for differentiation
 is indicated,}
-
-\item{...}{further arguments.}
 
 \item{x}{a \code{vcov.mlogit} or a \code{summary.vcov.mlogit} object,}
 

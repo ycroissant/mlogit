@@ -156,7 +156,7 @@ MC <- dfidx(ModeCanada, subset = noalt == 4)
 ml.MC <- mlogit(choice ~ freq + cost + ivt + ovt | urban + income, MC, 
 reflevel = 'car', alt.subset = c("car", "train", "air"))
 hl.MC <- mlogit(choice ~ freq + cost + ivt + ovt | urban + income, MC, 
-reflevel = 'car', alt.subset = c("car", "train", "air"), heterosc = TRUE)
+reflevel = 'car', alt.subset = c("car", "train", "air"), heterosc = TRUE, hessian = FALSE)
 coef(summary(hl.MC))[11:12, ]
 ``` 
 

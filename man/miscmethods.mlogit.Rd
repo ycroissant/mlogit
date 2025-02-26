@@ -9,7 +9,6 @@
 \alias{model.response.mlogit}
 \alias{update.mlogit}
 \alias{print.mlogit}
-\alias{logLik.mlogit}
 \alias{summary.mlogit}
 \alias{print.summary.mlogit}
 \alias{predict.mlogit}
@@ -36,8 +35,6 @@
   width = getOption("width"),
   ...
 )
-
-\method{logLik}{mlogit}(object, ...)
 
 \method{summary}{mlogit}(object, ..., type = c("chol", "cov", "cor"))
 

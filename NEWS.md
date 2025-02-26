@@ -1,5 +1,15 @@
 # mlogit 1.1-2
 
+* the vcov method is now inherited from micsr
+
+* a value element is added to the result
+
+* the logLik element is now a named numeric (model, saturated and
+  null)
+
+* the numerical hessian is now computed using numDeriv when the
+  analytical hessian is not provided if hessian = TRUE
+
 * a df.residual element is added to the result, the df.residual method
   is removed
 

@@ -118,8 +118,9 @@ mfR2 <- function(x){
 ##   n <- sum(eff)
 ##   llo <- sum(eff*log(eff/n))
 ##   1-ll/llo
-  logLik0 <- attr(x$logLik, 'null')
-  1 - x$logLik / logLik0
+#  logLik0 <- attr(x$logLik, 'null')
+#  1 - x$logLik / logLik0
+    1 - x$logLik["model"] / x$logLik["null"]
 }
 
 lratio <- function(object){
@@ -294,7 +295,10 @@ scoretest.mlogit <- function(object, ...){
         gradvect <- apply(newmodel$gradient, 2, sum) else gradvect <- newmodel$gradient
     # fixed coefficients should be removed to compute the statistic
     fixed <- attr(newmodel$coefficients, "fixed")
-    stat <- - sum(gradvect[! fixed] * solve(newmodel$hessian[! fixed, ! fixed], gradvect[! fixed]))
+#    stat <- - sum(gradvect[! fixed] * solve(newmodel$hessian[! fixed, ! fixed], gradvect[! fixed]))
+    info_est <- crossprod(newmodel$gradient)
+    stat <- sum(gradvect[! fixed] * solve(info_est[! fixed, ! fixed], gradvect[! fixed]))
+
     names(stat) <- "chisq"
     df <- c(df = length(coef(newmodel)) - length(coef(object)))
     pval <- pchisq(stat, df = df, lower.tail = FALSE)

@@ -55,7 +55,7 @@
 #' @name miscmethods.mlogit
 #' @aliases residuals.mlogit df.residual.mlogit terms.mlogit
 #'     model.matrix.mlogit model.response.mlogit update.mlogit
-#'     print.mlogit logLik.mlogit summary.mlogit print.summary.mlogit
+#'     print.mlogit  summary.mlogit print.summary.mlogit
 #'     predict.mlogit fitted.mlogit coef.mlogit
 #'     coef.summary.mlogit
 #' @param x,object an object of class `mlogit`
@@ -155,11 +155,11 @@ print.mlogit <- function (x, digits = max(3, getOption("digits") - 2),
     invisible(x)
 }
 
-#' @rdname miscmethods.mlogit
-#' @export
-logLik.mlogit <- function(object,...){
-    object$logLik
-}
+## #' @rdname miscmethods.mlogit
+## #' @export
+## logLik.mlogit <- function(object,...){
+##     object$logLik
+## }
 
 #' @rdname miscmethods.mlogit
 #' @export
@@ -206,7 +206,7 @@ print.summary.mlogit <- function(x, digits = max(3, getOption("digits") - 2),
     cat("\nCoefficients :\n")
     printCoefmat(x$CoefTable, digits = digits)
     cat("\n")
-    cat(paste("Log-Likelihood: ", signif(x$logLik, digits), "\n", sep = ""))
+    cat(paste("Log-Likelihood: ", signif(x$logLik[1], digits), "\n", sep = ""))
     if (has.intercept(x)){
         cat("McFadden R^2: ", signif(x$mfR2, digits), "\n")
         cat("Likelihood ratio test : ", names(x$lratio$statistic),
@@ -445,8 +445,6 @@ effects.mlogit <- function(object, covariate = NULL,
 #' usual. If `what` equals `errors` the covariance matrix of the
 #' errors of the model is returned. Finally, if `what` equals `rpar`,
 #' the covariance matrix of the random parameters are extracted,
-#' @param subset the subset of the coefficients that have to be extracted (only
-#' relevant if `what` ` = "coefficients"`),
 #' @param type with this argument, the covariance matrix may be returned (the
 #' default) ; the correlation matrix with the standard deviation on the
 #' diagonal may also be extracted,
@@ -454,6 +452,7 @@ effects.mlogit <- function(object, covariate = NULL,
 #' probit model ; in this case the covariance matrix is of error differences is
 #' returned and, with this argument, the alternative used for differentiation
 #' is indicated,
+#' @param vcov,subset,fixed,grep, invert see the `micsr` method
 #' @param digits the number of digits,
 #' @param width the width of the printing,
 #' @param ... further arguments.
@@ -462,24 +461,39 @@ effects.mlogit <- function(object, covariate = NULL,
 #' @seealso  [mlogit()] for the estimation of multinomial logit
 #' models.
 #' @keywords regression
+## vcov.mlogit <- function(object,
+##                         what = c('coefficient', 'errors', 'rpar'),
+##                         subset = c("all", "iv", "sig", "sd", "sp", "chol", "covariates", "vcov"),
+##                         type = c('cov', 'cor', 'sd'),
+##                         reflevel = NULL, ...){
+##     whichcoef <- match.arg(subset)
+##     what <- match.arg(what)
+##     type <- match.arg(type)
+##     fixed <- attr(object$coefficients, "fixed")
+##     ncoefs <- names(object$coefficients)
 vcov.mlogit <- function(object,
+                        ...,
+                        vcov = NULL,
                         what = c('coefficient', 'errors', 'rpar'),
-                        subset = c("all", "iv", "sig", "sd", "sp", "chol", "covariates", "vcov"),
+                        subset = NA,
+                        fixed = FALSE,
+                        grep = NULL,
+                        invert = TRUE,
                         type = c('cov', 'cor', 'sd'),
-                        reflevel = NULL, ...){
-    whichcoef <- match.arg(subset)
+                        reflevel = NULL){
     what <- match.arg(what)
     type <- match.arg(type)
-    fixed <- attr(object$coefficients, "fixed")
+#    fixed <- attr(object$coefficients, "fixed")
     ncoefs <- names(object$coefficients)
 
     # for the coefficients, we have to check the problem for fixed
     # coefficients
     if (what == 'coefficient'){
-        if (whichcoef == "all") selcoef <- 1:length(ncoefs)
-        else selcoef <- grep(whichcoef, ncoefs)
-        if (any(fixed)) selcoef <- selcoef[! fixed]
-        result <- solve(- object$hessian[selcoef, selcoef])
+        oclass <- class(object)
+        class(object) <- setdiff(oclass, "mlogit")
+        result <- vcov(object, ..., vcov = vcov, subset = subset, fixed = fixed,
+                       grep = grep, invert = invert)
+        class(object) <- oclass
     }
     
     if (what == 'errors'){

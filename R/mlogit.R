@@ -81,6 +81,8 @@ dfidx::as_tibble
 #'     estimated or not: if not, the `model.frame` is returned,
 #' @param seed the seed to use for random numbers (for mixed logit and
 #'     probit models),
+#' @param hessian a boolean, wheter or not to compute the hessian: the
+#'     default is true, except for models that require simulations
 #' @param ... further arguments passed to `mlogit.data` or
 #'     `mlogit.optim`.
 #' 
@@ -236,7 +238,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
                    nests = NULL, un.nest.el = FALSE, unscaled = FALSE,
                    heterosc = FALSE, rpar = NULL, probit = FALSE,
                    R = 40, correlation = FALSE, halton = NULL, random.nb = NULL,
-                   panel = FALSE, estimate = TRUE, seed = 10, ...){
+                   panel = FALSE, estimate = TRUE, seed = 10, hessian = NULL, ...){
     callT <- match.call(expand.dots = TRUE)
     formula <- callT$formula <- Formula(formula)
     nframe <- length(sys.calls())
@@ -255,7 +257,9 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     heterosc.logit <- mt['heterosc']
     mixed.logit <- mt["mixed"]
     if (multinom.logit) callT$method <- 'nr'
-
+    if (! is.null(hessian)) comp_hessian <- hessian
+    else comp_hessian <- ! (probit | mixed.logit)
+    
     # 1 ######################################################
     # Subset the data.frame if necessary
     ##########################################################
@@ -645,26 +649,56 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     #YC n/N already defined
     n <- sum(freq)
     x$est.stat$elaps.time <- proc.time() - start.time
-    logLik <- structure( - as.numeric(x$optimum),
-                        df = length(x$coefficients),
-                        null = sum(freq * log(freq / N)),
-                        class = "logLik"
-                        )
+    ## logLik <- structure( - as.numeric(x$optimum),
+    ##                     df = length(x$coefficients),
+    ##                     null = sum(freq * log(freq / N)),
+    ##                     class = "logLik"
+    ##                     )
+    logLik <- c(model = - as.numeric(x$optimum),
+                saturated = 0,
+                null = sum(freq * log(freq / N)))
+
+
+    
     if (mixed.logit) rpar <- make.rpar(rpar, correlation, x$coefficients, NULL) else rpar <- NULL
 #    if (! nested.logit) nests <- NULL
-
+    
+    opt[["param"]] <- as.name("param")
+    ## names(opt)[which(names(opt) == "param")] <- ""
+    ## opt$gradient <- TRUE
+    ## fun <- function(param) as.numeric(eval(opt))
+    ## fun2 <- function(param) attr(eval(opt), "gradient")
+    ## print(fun2(x$coefficients))
+    ## print(numDeriv::jacobian(fun2, x$coefficients))
+    ## print(numDeriv::hessian(fun, x$coefficients))
+    ## print(attr(x$optimum, "hessian"))
+    ## print(x$optimum)
+    
     # if no hessian is returned, use the BHHH approximation
     if (is.null(attr(x$optimum, 'hessian'))){
-        opt[["param"]] <- as.name("param")
-        names(opt)[which(names(opt) == "param")] <- ""
-        fun <- function(param) as.numeric(eval(opt))
-        hessian <- - numDeriv::hessian(fun, x$coefficients)
+        if (comp_hessian){
+            opt[["param"]] <- as.name("param")
+            opt$gradient <- TRUE
+            names(opt)[which(names(opt) == "param")] <- ""
+        ## fun <- function(param) as.numeric(eval(opt))
+            fun_grad <- function(param) attr(eval(opt), "gradient")
+        ## otime <- proc.time()
+            hessian <- - numDeriv::jacobian(fun_grad, x$coefficients)
+            rownames(hessian) <- colnames(hessian) <- names(x$coefficients)
+        ## print(proc.time() - otime)
+        ## print(hessian)
+        ## otime <- proc.time()
+        ## hessian <- - numDeriv::hessian(fun, x$coefficients)
+        ## print(hessian)
+        ## print(proc.time() - otime)
+        }
+        else hessian <- NULL
     } else hessian <- - attr(x$optimum, 'hessian')
 
     fitted <- attr(x$optimum, "fitted")
     probabilities <- attr(x$optimum, "probabilities")
     linpred <- attr(x$optimum, "linpred")
-
+    value <- log(fitted)
 
     resid <- Reduce("cbind", yl) - probabilities
     attr(x$coefficients, "fixed") <- attr(x$optimum, "fixed")
@@ -736,6 +770,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
         list(
             coefficients  = x$coefficients,
             logLik        = logLik,
+            value         = value,
             gradient      = gradient,
             hessian       = hessian,
             est.stat      = x$est.stat,
@@ -752,6 +787,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
             model         = mf,
             freq          = freq,
             formula       = formula,
+            est_method    = "ml",
             call          = callT),
 # NEWCOEF        
         class = c("mlogit", "micsr")

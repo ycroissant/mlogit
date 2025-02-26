@@ -26,6 +26,7 @@ mlogit(
   panel = FALSE,
   estimate = TRUE,
   seed = 10,
+  hessian = NULL,
   ...
 )
 }
@@ -101,6 +102,9 @@ estimated or not: if not, the \code{model.frame} is returned,}
 
 \item{seed}{the seed to use for random numbers (for mixed logit and
 probit models),}
+
+\item{hessian}{a boolean, wheter or not to compute the hessian: the
+default is true, except for models that require simulations}
 
 \item{...}{further arguments passed to \code{mlogit.data} or
 \code{mlogit.optim}.}
@@ -231,7 +235,7 @@ pr <- mlogit(choice ~ wait + travel + vcost, TravelMode, probit = TRUE)
 \dontrun{
 rpl <- mlogit(mode ~ price + catch | income, Fishing, varying = 2:9,
               rpar = c(price= 'n', catch = 'n'), correlation = TRUE,
-              alton = NA, R = 50)
+              halton = NA, R = 50)
 summary(rpl)
 rpar(rpl)
 cor.mlogit(rpl)
