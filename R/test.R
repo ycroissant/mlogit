@@ -156,11 +156,12 @@ irrelevant.args.warning <- function(object, args){
 #' and the likelihood ration test and a new function for the score
 #' test
 #' 
-#' @name scoretest
+#' @name three.tests
 #' @importFrom lmtest lrtest lrtest.default waldtest waldtest.default
-#' @aliases scoretest scoretest.mlogit scoretest.default
-#'     waldtest.mlogit lrtest.mlogit
+#' @importFrom micsr scoretest
+#' @aliases scoretest.mlogit waldtest.mlogit lrtest.mlogit
 #' @param object an object of class `mlogit` or a formula,
+#' @param vcov the covariance matrix estimator
 #' @param ... two kinds of arguments can be used. If `mlogit`
 #'     arguments are introduced, initial model is updated using these
 #'     arguments. If `formula` or other `mlogit` models are
@@ -185,7 +186,6 @@ irrelevant.args.warning <- function(object, args){
 #' heteroscedastic logit model, the constrained one is the multinomial
 #' logit model.
 #' @return an object of class `htest`.
-#' @export
 #' @author Yves Croissant
 #' @keywords htest
 #' @examples
@@ -200,18 +200,17 @@ irrelevant.args.warning <- function(object, args){
 #' lrtest(ml, hl)
 #' waldtest(hl)
 #' scoretest(ml, heterosc = TRUE)
-scoretest <- function(object, ...){
-    UseMethod("scoretest")
-}
+NULL
 
-#' @rdname scoretest
+#' @method scoretest mlogit
 #' @export
-scoretest.mlogit <- function(object, ...){
+scoretest.mlogit <- function(object, ..., vcov = c("hessian", "opg")){
+    .vcov <- match.arg(vcov)
     objects <- list(object, ...)
     margs <- c('nests', 'un.nest.el', 'unscaled', 'heterosc', 'rpar',
                'R', 'correlation', 'halton', 'random.nb', 'panel', 'constPar')
     mlogit.args <- objects[names(objects) %in% margs]
-    if (!is.null(names(objects))) objects <- objects[!(names(objects) %in% margs)]
+    if (! is.null(names(objects))) objects <- objects[! (names(objects) %in% margs)]
     nmodels <- length(objects)
     start.values <- c(coef(object))
     m <- list(nests = NULL, un.nest.el = FALSE, unscaled = FALSE, heterosc = FALSE,
@@ -221,7 +220,34 @@ scoretest.mlogit <- function(object, ...){
     
     # if several models are provided, just use the default method
     if (nmodels > 1){
-        return(scoretest.default(object, ...))
+        x <- objects[[1]]
+        if (nmodels > 2) stop("Two models should be provided")
+        if(! inherits(objects[[2]], "formula")) objects[[2]] <- formula(objects[[2]])
+        newform <- objects[[2]]
+        y <- update(x, newform, estimate = FALSE)
+        nX <- model.matrix(y)
+        new_nms <- colnames(nX)
+        old_nms <- names(coef(x))
+        L <- length(new_nms) - length(old_nms)
+        if(! all(old_nms %in% new_nms))
+            stop("the old model is not nested in the new one")
+        start <- coef(x)[new_nms]
+        start[is.na(start)] <- 0
+        names(start) <- new_nms
+        newform <- update(formula(x), newform)
+        y <- update(x, formula = newform, start = start, iterlim = 0)
+        .gradient <- apply(y$gradient, 2, sum)
+        if (.vcov == "hessian") information <- - y$hessian
+        if (.vcov == "opg") information <- crossprod(y$gradient)
+        .stat <- drop(crossprod(.gradient, solve(information, .gradient)))
+        result <- structure(list(statistic = c(chisq = .stat),
+                                 p.value = pchisq(.stat, lower.tail = FALSE, df = L),
+                                 parameter = c(df = L),
+                                 method = "score test",
+                                 data.name = paste(deparse(newform)),
+                                 alternative = "the constrained model is rejected"),
+                            class = "htest")
+        return(result)
     }
     heterosc.logit <- (m$heterosc)
     nested.logit <- (! is.null(m$nests) || ! is.null(object$nests))
@@ -313,42 +339,9 @@ scoretest.mlogit <- function(object, ...){
     result
 }
 
-#' @rdname scoretest
+#' @importFrom micsr scoretest
 #' @export
-scoretest.default <- function(object, ...){
-    new <- list(...)[[1]]
-    cls <- class(object)[1]
-    nmodels <- length(new)
-    if (! inherits(new, 'formula') & ! inherits(new, cls))
-        stop("the updating argument doesn't have a correct class")
-    if (inherits(new, cls)){
-        ncoefs <- names(coef(new))
-        new <- formula(formula(new))
-    }
-    else ncoefs <- names(coef(update(object, new, iterlim = 0)))
-    start <- numeric(length = length(ncoefs))
-    names(start) <- ncoefs
-    supcoef <- ! ncoefs %in% names(coef(object))
-    start[names(coef(object))] <- coef(object)
-    newmodel <- update(object, new, start= start, iterlim = 0)
-    data.name <- paste(deparse(formula(newmodel)))
-    alt.hyp <- "unconstrained model"
-    if (is.matrix(newmodel$gradient))
-        gradvect <- apply(newmodel$gradient, 2, sum) else gradvect <- newmodel$gradient
-    stat <- - sum(gradvect * solve(newmodel$hessian, gradvect))
-    names(stat) <- "chisq"
-    df <- c(df = length(coef(newmodel)) - length(coef(object)))
-    pval <- pchisq(stat, df = df, lower.tail = FALSE)
-    result <- list(statistic = stat,
-                   parameter = df,
-                   p.value = pval,
-                   data.name = data.name,
-                   method = "score test",
-                   alternative = alt.hyp
-                   )
-    class(result) <- 'htest'
-    result
-}
+micsr::scoretest
 
 #' @importFrom lmtest waldtest
 #' @export
@@ -379,14 +372,14 @@ waldtest.mlogit <- function(object, ...){
     L <- length(object$freq)
     
     # guess the nature of the fitted model
-    mixed.logit <- !is.null(object$call$rpar)
-    heterosc.logit <- !is.null(object$call$heterosc) && object$call$heterosc
-    nested.logit <- !is.null(object$call$nests)
+    mixed.logit <- ! is.null(object$call$rpar)
+    heterosc.logit <- ! is.null(object$call$heterosc) && object$call$heterosc
+    nested.logit <- ! is.null(object$call$nests)
 
     ## Heteroscedastic logit model
     # the hypothesis is that J-1 parameters = 1
     if (heterosc.logit){
-        su <- (K+1):(K+L-1)
+        su <- (K + 1):(K + L - 1)
         q <- rep(1, length(su))
         hyp <- "homoscedasticity"
     }

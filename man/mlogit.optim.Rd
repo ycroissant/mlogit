@@ -130,4 +130,4 @@ default method is \code{'nr'} and \code{print.level = 0}.
 \author{
 Yves Croissant
 }
-\keyword{regression}
+\keyword{regressionn}

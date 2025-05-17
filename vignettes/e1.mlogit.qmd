@@ -295,7 +295,7 @@ mi2 <- mlogit(depvar ~ oc + ic | income, H, reflevel = "hp")
 ```{r }
 lrtest(mc, mi2)
 waldtest(mc, mi2)
-scoretest(mc, mi2)
+#scoretest(mc, mi2)
 ``` 
 
 (c) Try other models. Determine which model you think is best from these data.
@@ -342,7 +342,9 @@ share of houses with heat pumps?
 
 ```{r }
 Hn <- H
-Hn[idx(Hn, 2) == "hp", "ic"] <- 0.9 * Hn[idx(Hn, 2) == "hp", "ic"]
+#Hn[idx(Hn, 2) == "hp", "ic"] <- 0.9 * Hn[idx(Hn, 2) == "hp", "ic"]
+#Hn <- dplyr::mutate(Hn, id = ifelse(idx$id2 == "hp", 0.9 * ic, ic))
+Hn <- dplyr::mutate(Hn, id = ifelse(id2 == "hp", 0.9 * ic, ic))
 apply(predict(mc, newdata = Hn), 2, mean)
 ```
 

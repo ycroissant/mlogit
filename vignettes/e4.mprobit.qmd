@@ -163,7 +163,9 @@ increase in demand? What is the percent change in share for each mode?
 
 ```{r }
 Mo2 <- Mo
-Mo2[idx(Mo2, 2) == 'car', 'cost'] <- Mo2[idx(Mo2, 2) == 'car', 'cost'] * 2
+#Mo2[idx(Mo2, 2) == 'car', 'cost'] <- Mo2[idx(Mo2, 2) == 'car', 'cost'] * 2
+#Mo2 <- dplyr::mutate(Mo2, cost = ifelse(idx$id2 == "car", 2 * cost, cost))
+Mo2 <- dplyr::mutate(Mo2, cost = ifelse(id2 == "car", 2 * cost, cost))
 newShares <- apply(predict(p1, newdata = Mo2), 2, mean)
 cbind(original = actShares, new = newShares, 
       change = round((newShares - actShares) / actShares * 100))

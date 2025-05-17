@@ -7,6 +7,7 @@
 \alias{idx}
 \alias{idx_name}
 \alias{as_tibble}
+\alias{scoretest}
 \alias{waldtest}
 \alias{lrtest}
 \title{Objects exported from other packages}
@@ -19,5 +20,7 @@ below to see their documentation.
   \item{dfidx}{\code{\link[dfidx:reexports]{as_tibble}}, \code{\link[dfidx]{dfidx}}, \code{\link[dfidx]{idx}}, \code{\link[dfidx]{idx_name}}}
 
   \item{lmtest}{\code{\link[lmtest]{lrtest}}, \code{\link[lmtest]{waldtest}}}
+
+  \item{micsr}{\code{\link[micsr]{scoretest}}}
 }}
 

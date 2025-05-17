@@ -1,7 +1,3 @@
-#' @rdname rpar
-#' @export
-names.rpar <- function(x) names_rpar(x, prefix = NULL, diag = NULL, unique = FALSE)
-
 names_rpar <- function(x, prefix = NULL, diag = NULL, unique = FALSE){
     rpar <- x
     K <- length(rpar)

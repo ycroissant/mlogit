@@ -99,7 +99,7 @@
 #' optimization method used, `'message'
 #' 
 #' @author Yves Croissant
-#' @keywords regression
+#' @keywords regressionn
 #' @export
 mlogit.optim <- function(logLik, start,
                          method = c('bfgs', 'nr', 'bhhh'),
@@ -270,6 +270,7 @@ numderiv <- function(f, param, ...){
 }
 
 #' @rdname mlogit.optim
+#' @method print est.stat
 #' @export
 print.est.stat <- function(x, ...){
     et <- x$elaps.time[3]

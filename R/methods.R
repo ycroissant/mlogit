@@ -45,6 +45,11 @@
 ##     K <- length(coef(object))
 ##     n - K
 ## }
+## #' @param confint,conflevel see tidy
+## #' @param subset an optional vector of coefficients to extract for the
+## #'     `coef` method,
+## #' @param fixed if `FALSE` (the default), constant coefficients are
+## #'     not returned,
 
 
 
@@ -59,9 +64,6 @@
 #'     predict.mlogit fitted.mlogit coef.mlogit
 #'     coef.summary.mlogit
 #' @param x,object an object of class `mlogit`
-#' @param confint,conflevel see tidy
-#' @param subset an optional vector of coefficients to extract for the
-#'     `coef` method,
 #' @param digits the number of digits,
 #' @param width the width of the printing,
 #' @param new an updated formula for the `update` method,
@@ -80,8 +82,6 @@
 #'     correlation matrix and the standard deviations,
 #' @param returnData for the `predict` method, if `TRUE`, the data is
 #'     returned as an attribute,
-#' @param fixed if `FALSE` (the default), constant coefficients are
-#'     not returned,
 #' @param n,m see [dfidx::idx()]
 #' @param ... further arguments.
 #' 
@@ -328,6 +328,9 @@ coef.summary.mlogit <- function(object, ...){
     result
 }
 
+## #' Fish <- mlogit.data(Fishing, varying = c(2:9), shape = "wide", choice = "mode")
+
+
 #' Marginal effects of the covariates
 #' 
 #' The `effects` method for `mlogit` objects computes the marginal
@@ -360,7 +363,7 @@ coef.summary.mlogit <- function(object, ...){
 #' @examples
 #' 
 #' data("Fishing", package = "mlogit")
-#' Fish <- mlogit.data(Fishing, varying = c(2:9), shape = "wide", choice = "mode")
+#' Fish <- dfidx(Fishing, varying = 2:9, choice = "mode")
 #' m <- mlogit(mode ~ price | income | catch, data = Fish)
 #' # compute a data.frame containing the mean value of the covariates in
 #' # the sample
@@ -436,7 +439,7 @@ effects.mlogit <- function(object, covariate = NULL,
 #' @name vcov.mlogit
 #' 
 #' @aliases vcov.mlogit print.vcov.mlogit summary.vcov.mlogit
-#' print.summary.vcov.mlogit
+#' print.summary.vcov.mlogit formula.mlogit
 #' @param object a `mlogit` object (and a `vcov.mlogit` for the
 #' summary method),
 #' @param x a `vcov.mlogit` or a `summary.vcov.mlogit` object,
@@ -452,7 +455,7 @@ effects.mlogit <- function(object, covariate = NULL,
 #' probit model ; in this case the covariance matrix is of error differences is
 #' returned and, with this argument, the alternative used for differentiation
 #' is indicated,
-#' @param vcov,subset,fixed,grep, invert see the `micsr` method
+#' @param vcov,subset,fixed,grep,invert see the `micsr` method
 #' @param digits the number of digits,
 #' @param width the width of the printing,
 #' @param ... further arguments.
@@ -558,6 +561,14 @@ vcov.mlogit <- function(object,
     }
     structure(result, class = c('vcov.mlogit', class(result)), type = type)
 }
+
+## #' @rdname miscmethods.mlogit
+## #' @method formula mlogit
+## #' @export
+## formula.mlogit <- function(x, ...){
+##     x$formula
+## }
+
 
 #' @rdname vcov.mlogit
 #' @method print vcov.mlogit

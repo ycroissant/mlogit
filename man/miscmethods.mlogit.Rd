@@ -91,14 +91,6 @@ correlation matrix and the standard deviations,}
 
 \item{returnData}{for the \code{predict} method, if \code{TRUE}, the data is
 returned as an attribute,}
-
-\item{confint, conflevel}{see tidy}
-
-\item{subset}{an optional vector of coefficients to extract for the
-\code{coef} method,}
-
-\item{fixed}{if \code{FALSE} (the default), constant coefficients are
-not returned,}
 }
 \description{
 Miscellaneous methods for \code{mlogit} objects.

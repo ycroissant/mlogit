@@ -104,7 +104,7 @@ estimated or not: if not, the \code{model.frame} is returned,}
 probit models),}
 
 \item{hessian}{a boolean, wheter or not to compute the hessian: the
-default is true, except for models that require simulations}
+default is false}
 
 \item{...}{further arguments passed to \code{mlogit.data} or
 \code{mlogit.optim}.}

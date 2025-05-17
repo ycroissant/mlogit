@@ -29,7 +29,7 @@ dfidx::as_tibble
 #' @importFrom stats printCoefmat punif qlnorm qnorm qunif
 #' @importFrom stats relevel reshape residuals rnorm runif
 #' @importFrom stats terms update vcov dunif effects
-#' @importFrom micsr gaussian_quad
+#' @importFrom micsr gauss_laguerre
 #' @param formula a symbolic description of the model to be estimated,
 #' @param data the data: an `mlogit.data` object or an ordinary
 #'     `data.frame`,
@@ -82,7 +82,7 @@ dfidx::as_tibble
 #' @param seed the seed to use for random numbers (for mixed logit and
 #'     probit models),
 #' @param hessian a boolean, wheter or not to compute the hessian: the
-#'     default is true, except for models that require simulations
+#'     default is false
 #' @param ... further arguments passed to `mlogit.data` or
 #'     `mlogit.optim`.
 #' 
@@ -258,7 +258,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     mixed.logit <- mt["mixed"]
     if (multinom.logit) callT$method <- 'nr'
     if (! is.null(hessian)) comp_hessian <- hessian
-    else comp_hessian <- ! (probit | mixed.logit)
+    else comp_hessian <- multinom.logit#! (probit | mixed.logit)
     
     # 1 ######################################################
     # Subset the data.frame if necessary
@@ -354,6 +354,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     # if data is an ordinary dfidx object, add the dfidx_mlogit class
 #    if (class(data)[1] == "dfidx") class(data) <- c("dfidx_mlogit", class(data))
     if (! inherits(data, "dfidx_mlogit")) class(data) <- c("dfidx_mlogit", class(data))
+
     
     # 3 ######################################################
     # compute the model.frame
@@ -374,8 +375,10 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     mf[[1L]] <- as.name("model.frame")
     # mlogit needs balanced data
     mf$balanced <- TRUE
-    mf <- eval(mf, parent.frame())
-    
+    mf <- eval(mf, parent.frame())  
+    .terms <- attr(mf, "terms")
+    if (! estimate) return(mf)
+
     # 4 ###########################################################
     # get the dimensions of the model
     ###############################################################
@@ -448,7 +451,6 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     K <- ncol(X)
     .df.residual <- N - K
     colnamesX <- colnames(X)
-
     # extract the response and coerce it to a logical
     y <- as.logical(model.response(mf))
     # choice is a vector of length N containing the alternative chosen
@@ -464,7 +466,6 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     names(Xl) <- levels(alt)
     for (i in levels(alt))  Xl[[i]] <- X[altnoNA == i, , drop = FALSE]
     yl <- split(y, altnoNA)
-    
     yl <- lapply(yl, function(x){x[is.na(x)] <- FALSE ; x})
     unchid <- if(is.factor(chid)) as.character(levels(chid)) else unique(chid)
     attr(yl, "chid") <- unchid
@@ -583,7 +584,9 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     if (probit)
         opt[c('logLik', 'X', 'y')] <- list(as.name('lnl.mprobit'), as.name('DX'), as.name('yv'))
     if (heterosc.logit){
-        rn <- micsr::gaussian_quad(R, kind = "laguerre")
+#        rn <- gaussian_quad(R, kind = "laguerre")
+        rn <- gauss_laguerre(R)
+#        names(rn) <- c("nodes", "weights")
         opt[c('logLik', 'rn')] <- list(as.name('lnl.hlogit'), as.name('rn'))
     }
     if (nested.logit)
@@ -591,7 +594,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
             list(as.name('lnl.nlogit'), as.name('nests'),
                  as.name('un.nest.el'), as.name('unscaled'))
     x <- eval(opt, sys.frame(which = nframe))
-
+    
     # Construct a logLik function with only one argument
     lnl.args <- unique(Reduce("c",
                               lapply(list(lnl.mprobit, lnl.slogit, lnl.wlogit,
@@ -787,10 +790,12 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
             model         = mf,
             freq          = freq,
             formula       = formula,
+            terms         = .terms,
             est_method    = "ml",
             call          = callT),
 # NEWCOEF        
         class = c("mlogit", "micsr")
+#        class = c("mlogit", "micsr", "lm")
 #        class = "mlogit"
         ) 
     result

@@ -1,5 +1,21 @@
 # mlogit 1.1-2
 
+* dependence on R (>= 3.5.0)
+
+* there where small differences between the .Rout and .Rout.save
+  files, the later have been updated
+
+* the first vignette is renamed 1. Introduction
+
+* the estimate argument of mlogit is now operational : if FALSE, the
+  model frame is returned
+
+* scoretest.mlogit now unables to test models with different
+  covariates sets
+
+* the formula element of mlogit objects is replaced by a term element
+  FO FIX scoretest.default
+
 * the vcov method is now inherited from micsr
 
 * a value element is added to the result

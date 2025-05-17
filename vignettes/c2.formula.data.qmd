@@ -142,8 +142,8 @@ head(idx(Tr), 3)
 ``` 
 
 Since its version 0.1-0, **dfidx** deals correctly with tibbles and
-has a nice `print` method. In the rest of this document, we'll always
-coerce the original data frame to a tibble before using `dfidx`:
+has a nice `print` method, we'll therefore coerce the original
+data frame to a tibble before using `dfidx`:
 
 ```{r}
 #| label: "dfidx with tibble"
@@ -200,7 +200,6 @@ their order of appearance:
 
 ```{r }
 #| label: "applying dfidx to Modecanada (1)"
-ModeCanada <- as_tibble(ModeCanada)
 MC <- dfidx(ModeCanada, subset = noalt == 4,
           alt.levels = c("train", "air", "bus", "car"))
 ``` 
@@ -425,7 +424,7 @@ of the relevant model matrix for random utility model as a specific
 `model.matrix` method for `dfidx_mlogit` objects is provided.
 
 ```{r}
-head(model.matrix(mf), 4)
+print(model.matrix(mf), n = 3)
 ```
 
 The model matrix contains $J-1$ columns for every choice situation specific

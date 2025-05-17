@@ -5,6 +5,7 @@
 \alias{print.vcov.mlogit}
 \alias{summary.vcov.mlogit}
 \alias{print.summary.vcov.mlogit}
+\alias{formula.mlogit}
 \title{vcov method for mlogit objects}
 \usage{
 \method{vcov}{mlogit}(
@@ -37,7 +38,7 @@ summary method),}
 
 \item{...}{further arguments.}
 
-\item{vcov, subset, fixed, grep, }{invert see the \code{micsr} method}
+\item{vcov, subset, fixed, grep, invert}{see the \code{micsr} method}
 
 \item{what}{indicates which covariance matrix has to be extracted : the
 default value is \code{coefficients}, in this case, \code{vcov} behaves as

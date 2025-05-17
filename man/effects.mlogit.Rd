@@ -45,7 +45,7 @@ alternatives
 \examples{
 
 data("Fishing", package = "mlogit")
-Fish <- mlogit.data(Fishing, varying = c(2:9), shape = "wide", choice = "mode")
+Fish <- dfidx(Fishing, varying = 2:9, choice = "mode")
 m <- mlogit(mode ~ price | income | catch, data = Fish)
 # compute a data.frame containing the mean value of the covariates in
 # the sample
