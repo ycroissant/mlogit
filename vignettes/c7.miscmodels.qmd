@@ -7,12 +7,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
+
+
 ## Paired combinatorial logit model
 
 @KOPP:WEN:00 proposed the *paired combinatorial logit model*, which is
   a nested logit model with nests composed by every combination of two
   alternatives. This model is obtained by using the following $G$
-  function :
+  function:
 
 $$
 G(y_1, y_2, ...,
@@ -22,7 +29,7 @@ $$
 
 The *pcl* model is consistent with random utility maximisation if
 $0<\lambda_{kl}\leq 1$ and the multinomial logit results if
-$\lambda_{kl}=1 \;\forall (k,l)$. The resulting probabilities are :
+$\lambda_{kl}=1 \;\forall (k,l)$. The resulting probabilities are:
 
 $$
 P_l = \frac{\sum_{k\neq l}e^{V_l/\lambda_{lk}}\left(e^{V_k/\lambda_{lk}} + e^{V_l/\lambda_{lk}}\right)^{\lambda_{lk}-1}}
@@ -31,13 +38,13 @@ $$
 
 which can be expressed as a sum of $J-1$ product of a conditional
 probability of choosing the alternative and the marginal probability
-of choosing the nest :
+of choosing the nest:
 
 $$
 P_l=\sum_{k\neq l}P_{l\mid lk} P_{lk}
 $$
 
-with :
+with:
 
 $$
 P_{l \mid lk} = \frac{e^{V_l/\lambda_{lk}}}{e^{V_k/\lambda_{lk}} + e^{V_l/\lambda_{lk}}}
@@ -60,14 +67,16 @@ train-air nest is performed by using the `constPar` argument.
 ```{r}
 #| label: pcl
 #| message: false
-library("mlogit")
+library(mlogit)
 busUsers <- with(ModeCanada, case[choice == 1 & alt == 'bus'])
-Bhat <- subset(ModeCanada, ! case %in% busUsers & alt != 'bus' & noalt == 4)
+Bhat <- subset(ModeCanada, ! case %in% busUsers &
+                           alt != 'bus' & noalt == 4)
 Bhat$alt <- Bhat$alt[drop = TRUE]
-Bhat <- dfidx(Bhat, idx = c("case", "alt"), choice = "choice", idnames = c("chid", "alt"))
+Bhat <- dfidx(Bhat, idx = c("case", "alt"), choice = "choice",
+              idnames = c("chid", "alt"))
 pcl <- mlogit(choice ~ freq + cost + ivt + ovt, Bhat, reflevel = 'car',
               nests = 'pcl', constPar=c('iv:train.air'))
-summary(pcl)
+gaze(pcl)
 ``` 
 
 ## The rank-ordered logit model
@@ -77,23 +86,23 @@ give the full rank of their preference for all the alternative, and
 not only the prefered alternative. The relevant model for this kind of
 data is the rank-ordered logit model, which can be estimated as a
 standard multinomial logit model if the data is reshaped
-correctly\footnote{see for example [@BEGG:CARD:HAUS:81],
-[@CHAP:STAE:82] and [@HAUS:RUUD:87].}
+correctly.^[See for example @BEGG:CARD:HAUS:81, @CHAP:STAE:82
+and @HAUS:RUUD:87.]
 
 The ranking can be decomposed in a series of choices of the best
 alternative within a decreasing set of available alternatives. For
 example, with 4 alternatives, the probability that the ranking would
-be 3-1-4-2 can be writen as follow :
+be 3-1-4-2 can be writen as follow:
 
 - alternative 3 is in the first position, the probability is then
   $\frac{e^{\beta^{\top}x_3}}{e^{\beta^{\top}x_1}+e^{\beta^{\top}x_2}+e^{\beta^{\top}x_3}+e^{\beta^{\top}x_4}}$,
 - alternative 1 is in second position, the relevant probability is
   the logit probability that 1 is the chosen alternative in the set of
-  alternatives (1-2-4) :
+  alternatives (1-2-4):
   $\frac{e^{\beta^{\top}x_1}}{e^{\beta^{\top}x_1}+e^{\beta^{\top}x_2}+e^{\beta^{\top}x_4}}$,
 - alternative 4 is in third position, the relevant probability is
   the logit probability that 4 is the chosen alternative in the set of
-  alternatives (2-4) :
+  alternatives (2-4):
   $\frac{e^{\beta^{\top}x_4}}{e^{\beta^{\top}x_2}+e^{\beta^{\top}x_4}}$,
 - the probability of the full ranking is then simply the product
   of these 3 probabilities.
@@ -113,6 +122,7 @@ indicate the ranking of each alternative.
 
 ```{r}
 #| label: "game data set"
+#| collapse: true
 data("Game", package = "mlogit")
 data("Game2", package = "mlogit")
 head(Game,2)
@@ -128,11 +138,11 @@ To use `dfidx`, the `ranked` argument should `TRUE`:
 
 ```{r }
 #| label: "dfidx game"
-G <- dfidx(Game, varying = 1:12, choice = "ch", ranked = TRUE, idnames = c("chid", "alt"))
+G <- dfidx(Game, varying = 1:12, choice = "ch", ranked = TRUE,
+           idnames = c("chid", "alt"))
 G <- dfidx(Game2, choice = "ch", ranked = TRUE, idx = c("chid", "platform"),
            idnames = c("chid", "alt"))
-head(G)
-nrow(G)
+print(G, n = 3)
 ``` 
 
 Note that the choice variable is now a logical variable and that the
@@ -140,11 +150,17 @@ number of row is now 1820 (91 individuals $\times (6+5+4+3+2)$
 alternatives). 
 
 Using `PC` as the reference level, we can then reproduce the
-results of the original reference :
+results of the original reference:
 
 ```{r }
 #| label: "rol estimation"
-summary(mlogit(ch ~ own | hours + age, G, reflevel = "PC"))
+mlogit(ch ~ own | hours + age, G, reflevel = "PC") |> gaze()
 ``` 
 
 ## Bibliography
+
+
+```{r }
+#| echo: false
+options(oopts)
+```

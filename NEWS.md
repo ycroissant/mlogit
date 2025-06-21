@@ -1,5 +1,11 @@
 # mlogit 1.1-2
 
+* micsr::gaze is now re-exported
+
+* a new param argument is introduced for mlogit; it should be a vector
+  of coefficients and, if not null, the fitted probabilities are
+  returned
+
 * dependence on R (>= 3.5.0)
 
 * there where small differences between the .Rout and .Rout.save

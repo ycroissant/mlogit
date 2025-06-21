@@ -1,12 +1,20 @@
 ---
 title: "Exercise 4: Multinomial probit"
 author: Kenneth Train and Yves Croissant
+bibliography: ../inst/REFERENCES.bib
 date: '`r Sys.Date()`'
 vignette: >
   %\VignetteIndexEntry{Exercise 4: Multinomial probit}
   %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
+
+
+
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
 
 We have data on the mode choice of 453 commuters. Four modes are
 available: (1) bus, (2) car alone, (3) carpool, and (4) rail. We have
@@ -52,7 +60,7 @@ whether the covariance is higher between car alone and carpool or
 between bus and rail?
 
 ```{r }
-library("mlogit")
+library(mlogit)
 data("Mode", package="mlogit")
 Mo <- dfidx(Mode, choice = "choice", varying = 2:9)
 ```
@@ -65,7 +73,7 @@ p1 <- mlogit(choice ~ cost + time, Mo, seed = 20,
 ```
 
 ```{r }
-summary(p1)
+gaze(p1)
 ``` 
 > The estimated Choleski factor $L_1$ is :
 
@@ -142,6 +150,7 @@ actShares <- tapply(Mo$choice, Mo$id2, mean)
 > The predicted shares are : 
 
 ```{r }
+#| collapse: true
 predShares <- apply(fitted(p1, outcome = FALSE), 2, mean)
 rbind(predShares, actShares)
 sum(predShares)
@@ -163,10 +172,8 @@ increase in demand? What is the percent change in share for each mode?
 
 ```{r }
 Mo2 <- Mo
-#Mo2[idx(Mo2, 2) == 'car', 'cost'] <- Mo2[idx(Mo2, 2) == 'car', 'cost'] * 2
-#Mo2 <- dplyr::mutate(Mo2, cost = ifelse(idx$id2 == "car", 2 * cost, cost))
-Mo2 <- dplyr::mutate(Mo2, cost = ifelse(id2 == "car", 2 * cost, cost))
-newShares <- apply(predict(p1, newdata = Mo2), 2, mean)
+Mo2$cost[Mo2$id2 == 'car'] <- Mo2$cost[Mo2$id2 == 'car'] * 2
+newShares <- apply(predict(p1, newdata = Mo2, shape = "wide"), 2, mean)
 cbind(original = actShares, new = newShares, 
       change = round((newShares - actShares) / actShares * 100))
 ``` 
@@ -266,3 +273,12 @@ cbind(original = actShares, new = newShares,
 
  <!-- \end{answer} -->
 
+
+
+
+```{r }
+#| echo: false
+options(oopts)
+```
+
+## Bibliography

@@ -8,6 +8,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
+
 The data set `HC` from `mlogit` contains data in `R` format on the
 choice of heating and central cooling system for 250 single-family,
 newly built houses in California.
@@ -38,18 +44,18 @@ The variables are:
 - `income` is the annual income of the household
 
 Note that the full installation cost of alternative `gcc` is
-`ich.gcc+icca`, and similarly for the operating cost and for the
+`ich.gcc + icca`, and similarly for the operating cost and for the
 other alternatives with cooling.
 
 @. Run a nested logit model on the data for two nests and one log-sum
 coefficient that applies to both nests. Note that the model is
-specified to have the cooling alternatives (`gcc}, `ecc},
-`erc}, `hpc}) in one nest and the non-cooling alternatives
-(`gc}, `ec}, `er}) in another nest.
+specified to have the cooling alternatives (`gcc`, `ecc`,
+`erc`, `hpc`) in one nest and the non-cooling alternatives
+(`gc`, `ec`, `er`) in another nest.
 
 ```{r}
 #| label: nest1
-library("mlogit")
+library(mlogit)
 data("HC", package = "mlogit")
 HC <- dfidx(HC, varying = c(2:8, 10:16), choice = "depvar")
 cooling.modes <- idx(HC, 2) %in% c('gcc', 'ecc', 'erc', 'hpc')
@@ -65,10 +71,11 @@ HC$inc.room[room.modes] <- HC$income[room.modes]
 # create an intercet for cooling modes
 HC$int.cooling <- as.numeric(cooling.modes)
 # estimate the model with only one nest elasticity
-nl <- mlogit(depvar ~ ich + och +icca + occa + inc.room + inc.cooling + int.cooling | 0, HC,
+nl <- mlogit(depvar ~ ich + och +icca + occa + inc.room +
+                 inc.cooling + int.cooling | 0, HC,
              nests = list(cooling = c('gcc','ecc','erc','hpc'), 
              other = c('gc', 'ec', 'er')), un.nest.el = TRUE)
-summary(nl)
+gaze(nl)
 ``` 
 
 (a) The estimated log-sum coefficient is $0.59$. What does this
@@ -86,19 +93,19 @@ true model is standard logit be rejected?
 > equal to 1. The t-statistic is :
 
 ```{r }
- (coef(nl)['iv'] - 1) / sqrt(vcov(nl)['iv', 'iv'])
+#| collapse: true
+unname( (coef(nl)['iv'] - 1) / sqrt(vcov(nl)['iv', 'iv']))
 ``` 
 
 > The critical value of t for 95\% confidence is 1.96. So we can reject
 > the hypothesis at 95\% confidence.
- 
 > We can also use a likelihood ratio test because the multinomial logit
 > is a special case of the nested model.
 
 ```{r }
-# First estimate the multinomial logit model
+#| collapse: true
 ml <- update(nl, nests = NULL)
-lrtest(nl, ml)
+lrtest(nl, ml) |> gaze()
 ```  
 
 > Note that the hypothesis is rejected at 95\% confidence, but not at
@@ -109,9 +116,10 @@ the central alternatives in another nest. (Note that a heat pump is a
 central system.)
 
 ```{r }
-nl2 <- update(nl, nests = list(central = c('ec', 'ecc', 'gc', 'gcc', 'hpc'), 
-                    room = c('er', 'erc')))
-summary(nl2)
+nl2 <- update(nl,
+              nests = list(central = c('ec', 'ecc', 'gc', 'gcc', 'hpc'), 
+              room = c('er', 'erc')))
+gaze(nl2)
 ``` 
 
 (a) What does the estimate imply about the substitution patterns
@@ -128,8 +136,9 @@ across alternatives? Do you think the estimate is plausible?
 
 ```{r}
 #| label: tstat
- (coef(nl2)['iv'] - 1) / sqrt(vcov(nl2)['iv', 'iv'])
-lrtest(nl2, ml)
+#| collapse: true
+unname((coef(nl2)['iv'] - 1) / sqrt(vcov(nl2)['iv', 'iv']))
+lrtest(nl2, ml) |> gaze()
 ``` 
 
 > We cannot reject the hypothesis at standard confidence levels.
@@ -140,6 +149,7 @@ alternatives are in one nest and the heating alternatives in the other
 nest.
 
 ```{r }
+#| collapse: true
 logLik(nl)
 logLik(nl2)
 ```   
@@ -175,8 +185,9 @@ exercise 1 is the true model?
 > `nl3`.
 
 ```{r}
+#| collapse: true
 #| label: lrtest1
-lrtest(nl, nl3)
+lrtest(nl, nl3) |> gaze()
 ```   
 
 > The restricted model is the one from exercise 1 that has one log-sum
@@ -196,12 +207,18 @@ the same nest as alternatives `gcc`, `ecc` and `erc`?
 
 ```{r}
 #| label: threentest
+#| collapse: true
 nl4 <- update(nl, nests=list(n1 = c('gcc', 'ecc', 'erc'), n2 = c('hpc'),
                     n3 = c('gc', 'ec', 'er')))
-summary(nl4)
+logLik(nl4)
 ``` 
 
 > The $\ln L$ for this model is $-180.26$, which is lower (more negative)
 > than for the model with two nests, which got $-178.12$.
 
 
+
+```{r }
+#| echo: false
+options(oopts)
+```

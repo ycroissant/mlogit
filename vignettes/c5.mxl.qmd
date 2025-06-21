@@ -7,6 +7,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
+
 ## Derivation of the model
 
 A mixed logit model or random parameters logit model is a logit model
@@ -184,7 +190,8 @@ generic coefficients and to remove the intercept:
 ```{r}
 #| label: "multinomial logit for the Train data"
 #| message: false
-library("mlogit")
+library(mlogit)
+data("Train", package = "mlogit")
 Train$choiceid <- 1:nrow(Train)
 Tr <- dfidx(Train, choice = "choice", varying = 4:11, sep = "_",
             opposite = c("price", "comfort", "time", "change"),
@@ -192,7 +199,7 @@ Tr <- dfidx(Train, choice = "choice", varying = 4:11, sep = "_",
 Tr$price <- Tr$price / 100 / 2.20371
 Tr$time <- Tr$time / 60
 Train.ml <- mlogit(choice ~ price + time + change + comfort | - 1, Tr)
-coef(summary(Train.ml))
+Train.ml |> gaze()
 ``` 
 
 All the coefficients are highly significant and have the predicted
@@ -233,7 +240,6 @@ names(coef(Train.mxlc))
 
 There are now 6 parameters which are the elements of the Choleski
 decomposition of the covariance matrix of the three random parameters.
-
 These 6 parameters are therefore the elements of the following matrix
 
 $$
@@ -368,30 +374,19 @@ random but uncorrelated effects and a model with random and correlated
 effects. We first present the three tests of no correlated random
 effects:
 
-```{r} 
-#| label: "convenient statpval function 3"
-#| echo: false
-#| results: false
-statpval <- function(x){
-    if (inherits(x, "anova")) 
-        result <- as.matrix(x)[2, c("Chisq", "Pr(>Chisq)")]
-    if (inherits(x, "htest")) result <- c(x$statistic, x$p.value)
-    names(result) <- c("stat", "p-value")
-    round(result, 3)
-}
-``` 
-
 ```{r}
 #| label: "tests of no correlated random effects"
-lr.mxc <- lrtest(Train.mxlc, Train.ml)
-wd.mxc <- waldtest(Train.mxlc)
-lh.mxc <- car::linearHypothesis(Train.mxlc, c("chol.time:time = 0",
-"chol.time:change =  0", "chol.time:comfort = 0", "chol.change:change = 0",
-"chol.change:comfort = 0", "chol.comfort:comfort = 0"))
-sc.mxc <- scoretest(Train.ml, rpar = c(time = "n", change = "n",
-comfort = "n"), R = 100, correlation = TRUE, halton = NA, panel = TRUE)
-sapply(list(wald = wd.mxc, lh = lh.mxc, score = sc.mxc, lr = lr.mxc),
-statpval)
+#| collapse: true
+lrtest(Train.mxlc, Train.ml) |> gaze()
+waldtest(Train.mxlc) |> gaze()
+car::lht(Train.mxlc,
+         c("chol.time:time = 0", "chol.time:change =  0",
+           "chol.time:comfort = 0", "chol.change:change = 0",
+           "chol.change:comfort = 0", "chol.comfort:comfort = 0")) |>
+    gaze()
+scoretest(Train.ml,
+          rpar = c(time = "n", change = "n", comfort = "n"),
+          R = 100, correlation = TRUE, halton = NA, panel = TRUE)
 ``` 
 
 The hypothesis of no correlated random parameters is strongly
@@ -401,14 +396,13 @@ existence of random parameters being maintained.
 
 ```{r}
 #| label: "tests of no correlation"
-lr.corr <- lrtest(Train.mxlc, Train.mxlu)
-lh.corr <- car::linearHypothesis(Train.mxlc, c("chol.time:change = 0",
-"chol.time:comfort = 0", "chol.change:comfort = 0"))
-wd.corr <- waldtest(Train.mxlc, correlation = FALSE)
-#YC
-sc.corr <- scoretest(Train.mxlu, correlation = TRUE)
-sapply(list(wald = wd.corr, lh = lh.corr, score = sc.corr, lr = lr.corr),
-statpval)
+#| collapse: true
+lrtest(Train.mxlc, Train.mxlu) |> gaze()
+car::lht(Train.mxlc,
+         c("chol.time:change = 0", "chol.time:comfort = 0",
+           "chol.change:comfort = 0")) |> gaze()
+waldtest(Train.mxlc, correlation = FALSE) |> gaze()
+scoretest(Train.mxlu, correlation = TRUE) |> gaze()
 ``` 
 
 The hypothesis of no correlation is strongly reject with the Wald and
@@ -457,10 +451,11 @@ clientele. We first estimate a multinomial logit model.
 
 ```{r}
 #| label: "multinomial model for RiskyTransport"
-RT <- dfidx(RiskyTransport, choice = "choice", idx = list(c("chid", "id"), "mode"),
+RT <- dfidx(RiskyTransport, choice = "choice",
+            idx = list(c("chid", "id"), "mode"),
             idnames = c("chid", "alt"))
 ml.rt <- mlogit(choice ~ cost + risk  + seats + noise + crowdness +
-convloc + clientele | 0, data = RT, weights = weight)
+                convloc + clientele | 0, data = RT, weights = weight)
 ``` 
 
 Note the use of the `weights` argument in order to set
@@ -468,6 +463,7 @@ weights to the observations, as done in the original study.
 
 ```{r}
 #| label: "coef of risk and cost"
+#| collapse: true
 coef(ml.rt)[c("risk", "cost")]
 ``` 
 
@@ -481,8 +477,9 @@ to be random, following a zero-bounded triangular distribution.
 ```{r}
 #| label: "mixed effects model for RiskyTransport"
 mx.rt <- mlogit(choice ~ cost + risk  + seats + noise + crowdness +
-convloc + clientele | 0, data = RT, weights = weight,
-rpar = c(cost = 'zbt', risk = 'zbt'), R = 100, halton = NA, panel = TRUE)
+                convloc + clientele | 0, data = RT, weights = weight,
+                rpar = c(cost = 'zbt', risk = 'zbt'), R = 100,
+                halton = NA, panel = TRUE)
 ``` 
 
 The results are presented in @tbl-risktr.
@@ -491,6 +488,7 @@ The results are presented in @tbl-risktr.
 ```{r}
 #| label: tbl-risktr
 #| tbl-cap: "Transportation choices."
+#| echo: false
 modelsummary::msummary(list('Multinomial logit' = ml.rt, 'Mixed logit' = mx.rt))
 ``` 
 
@@ -538,17 +536,23 @@ max(indpar$VSL)
 This is not the case here as (absolute) minimum value of `cost`
 is $-0.003$ which leads to a maximum value of VSL of \$ $3131$.
 
-```{r}
-#| label: plotindpar
-#| fig-cap: "The value of a statistical life."
-#| eval: false
-library("ggplot2")
-RT$id <- RT$id
-indpar <- merge(unique(subset(as.data.frame(RT),
-                              select = c("id", "african"))),
-                indpar)
-ggplot(indpar) + geom_density(aes(x = VSL, linetype = african)) + 
-    scale_x_continuous(limits = c(200, 1200))
-```
+<!-- ```{r} -->
+<!-- #| label: plotindpar -->
+<!-- #| fig-cap: "The value of a statistical life." -->
+<!-- #| eval: false -->
+<!-- library("ggplot2") -->
+<!-- RT$id <- RT$id -->
+<!-- indpar <- merge(unique(subset(as.data.frame(RT), -->
+<!--                               select = c("id", "african"))), -->
+<!--                 indpar) -->
+<!-- ggplot(indpar) + geom_density(aes(x = VSL, linetype = african)) +  -->
+<!--     scale_x_continuous(limits = c(200, 1200)) -->
+<!-- ``` -->
 
 ## Bibliography
+
+
+```{r }
+#| echo: false
+options(oopts)
+```

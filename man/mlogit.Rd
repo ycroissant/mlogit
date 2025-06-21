@@ -27,6 +27,7 @@ mlogit(
   estimate = TRUE,
   seed = 10,
   hessian = NULL,
+  param = NULL,
   ...
 )
 }
@@ -105,6 +106,9 @@ probit models),}
 
 \item{hessian}{a boolean, wheter or not to compute the hessian: the
 default is false}
+
+\item{param}{a vector of coefficients for which the prediction
+should be performed}
 
 \item{...}{further arguments passed to \code{mlogit.data} or
 \code{mlogit.optim}.}

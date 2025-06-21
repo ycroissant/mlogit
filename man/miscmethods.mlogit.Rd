@@ -49,8 +49,6 @@
 
 \method{idx_name}{mlogit}(x, n = NULL, m = NULL)
 
-\method{predict}{mlogit}(object, newdata = NULL, returnData = FALSE, ...)
-
 \method{fitted}{mlogit}(
   object,
   type = c("outcome", "probabilities", "linpred", "parameters"),
@@ -86,11 +84,6 @@ parameters (the elements of the Cholesky decomposition matrix),
 correlation matrix and the standard deviations,}
 
 \item{n, m}{see \code{\link[dfidx:idx]{dfidx::idx()}}}
-
-\item{newdata}{a \code{data.frame} for the \code{predict} method,}
-
-\item{returnData}{for the \code{predict} method, if \code{TRUE}, the data is
-returned as an attribute,}
 }
 \description{
 Miscellaneous methods for \code{mlogit} objects.

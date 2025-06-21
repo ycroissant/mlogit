@@ -8,6 +8,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
+
 @. The problem set uses data on choice of heating system in California
 houses. The data set `Heating` from the `mlogit` package
 contains the data in `R` format. The observations consist of
@@ -76,11 +82,12 @@ alternative, etc.
 (a) Do the estimated coefficients have the expected signs?
 
 ```{r}
-library("mlogit")
+#| message: false
+library(mlogit)
 data("Heating", package = "mlogit")
-H <- dfidx(Heating, choice = "depvar", varying = c(3:12))
+H <- dfidx(Heating, choice = "depvar", varying = c(3:12, 17:21))
 m <- mlogit(depvar ~ ic + oc | 0, H)
-summary(m)
+gaze(m)
 ``` 
 
 > Yes, they are negative as expected, meaning that as the cost of a
@@ -90,19 +97,20 @@ summary(m)
 (b) Are both coefficients significantly different from zero?
 
 > Yes, the t-statistics are greater than 1.96, which is the critical
-> level for 95\% confidence level.
+> level for 95% confidence level.
 
 
 (c) How closely do the average probabilities match the shares of
 customers choosing each alternative?
 
 ```{r }
+#| collapse: true
 apply(fitted(m, outcome = FALSE), 2, mean)
 ```
 
-> Not very well. 63.67\% of the sample chose `gc` (as shown at the top of
+> Not very well. 63.67% of the sample chose `gc` (as shown at the top of
 > the summary) and yet the estimated model gives an average probability
-> of only 51.695\%. The other alternatives are also fairly poorly
+> of only 51.695%. The other alternatives are also fairly poorly
 > predicted. We will find how to fix this problem in one of the models
 > below.
 
@@ -122,6 +130,7 @@ dU = \beta_{ic} dic + \beta_{oc} doc = 0 \Rightarrow
 $$
 
 ```{r }
+#| collapse: true
 coef(m)["oc"]/coef(m)["ic"]
 ```   
 
@@ -158,7 +167,7 @@ $wtp$ that you calculated in part (c)? Is this reasonable?
 >   $LC=IC+(1/r)OC$. Substituting, we have $U=aIC + (a/r)OC$.
 
 > The models estimates $a$ as $-0.00623$ and $a/r$ as $-0.00457$. So $r =
->   a/(a/r)=-.000623/.00457 = 1.36$ or 136\% discount rate.
+>   a/(a/r)=-.000623/.00457 = 1.36$ or 136% discount rate.
 >   This is not reasonable, because it is far too high.
 
 @. Estimate a model that imposes the constraint that $r=0.12$ (such that
@@ -170,10 +179,11 @@ $wtp=8.33$). Test the hypothesis that $r=0.12$.
 > variable.
 
 ```{r }
+#| message: false
+#| collapse: true
 H$lcc <- H$ic + H$oc / 0.12
 mlcc <- mlogit(depvar ~ lcc | 0, H)
-library("lmtest")
-lrtest(m, mlcc)
+lrtest(m, mlcc) |> gaze()
 qchisq(0.05, df = 1, lower.tail = FALSE)
 ```   
 
@@ -183,7 +193,7 @@ qchisq(0.05, df = 1, lower.tail = FALSE)
 > test is for one restriction (ie a restiction on the relation of the
 > coefficient of operating cost to that of installation cost.) We
 > therefore compare $307$ with the critical value of chi-squared with
-> $1$ degree of freedom. This critical value for 95\% confidence is
+> $1$ degree of freedom. This critical value for 95% confidence is
 > $3.8$. Since the statistic exceeds the critical value, we reject the
 > hypothesis that $r=0.12$.
 
@@ -198,9 +208,13 @@ customers choosing each alternative?
 
 ```{r }
 mc <- mlogit(depvar ~ ic + oc, H, reflevel = 'hp')
-summary(mc)
-apply(fitted(mc, outcome = FALSE), 2, mean)
+gaze(mc)
 ```   
+
+```{r }
+#| collapse: true
+apply(fitted(mc, outcome = FALSE), 2, mean)
+```
 
 > Note that they match exactly: alternative-specific constants in a
 > logit model insure that the average probabilities equal the observed
@@ -210,14 +224,15 @@ apply(fitted(mc, outcome = FALSE), 2, mean)
 estimates. Are these reasonable?
 
 ```{r }
-wtp <- coef(mc)["oc"] / coef(mc)["ic"]
+#| collapse: true
+wtp <- unname(coef(mc)["oc"] / coef(mc)["ic"])
 wtp
 r <- 1 / wtp
 r
 ``` 
 
 > The decision-maker is willing to pay \$4.56 for a \$1 year stream of
-> savings. This implies $r = 0.22$. The decision-maker applies a 22\%
+> savings. This implies $r = 0.22$. The decision-maker applies a 22%
 > discount rate.  These results are certainly more reasonable that in
 > the previous model. The decision-maker is still estimated to be
 > valuing saving somewhat less than would seem rational (ie applying a
@@ -249,7 +264,7 @@ logically rather than actually estimating the model.
 > the model with `hp` left out.
 
 ```{r }
-update(mc, reflevel = "gr")
+update(mc, reflevel = "gr") |> coef()
 ``` 
 
 @. Now try some models with sociodemographic variables entering.
@@ -263,7 +278,7 @@ make the model better or worse?
 
 ```{r }
 mi <- mlogit(depvar ~ oc + I(ic / income), H)
-summary(mi)
+gaze(mi)
 ```   
 
 > The model seems to get worse. The $\ln L$ is lower (more negative) and the
@@ -293,9 +308,10 @@ mi2 <- mlogit(depvar ~ oc + ic | income, H, reflevel = "hp")
 > which system to install.
 
 ```{r }
-lrtest(mc, mi2)
-waldtest(mc, mi2)
-#scoretest(mc, mi2)
+#| collapse: true
+lrtest(mc, mi2) |> gaze()
+waldtest(mc, mi2) |> gaze()
+scoretest(mc, mi2) |> gaze()
 ``` 
 
 (c) Try other models. Determine which model you think is best from these data.
@@ -319,45 +335,51 @@ SeXb <- tapply(eXb, chid, sum)
 P <- eXb / SeXb[chid]
 P <- matrix(P, ncol = 5, byrow = TRUE)
 head(P)
+```
+
+
+```{r }
+#| collapse: true
 apply(P, 2, mean)
 ```
 
-> This can be computed much more simply using the \Rf{fitted` function,
-> with the \Ra{outcome`{fitted` argument set to \Rv{FALSE` so that the
+
+> This can be computed much more simply using the `fitted` function,
+> with the `outcome` argument set to `FALSE` so that the
 > probabilities for all the alternatives (and not only the chosen one)
 > is returned.
 
 ```{r }
+#| collapse: true
 apply(fitted(mc, outcome = FALSE), 2, mean)
 ``` 
 
 @. The California Energy Commission (CEC) is considering whether to
 offer rebates on heat pumps. The CEC wants to predict the effect of
 the rebates on the heating system choices of customers in
-California. The rebates will be set at 10\% of the installation
+California. The rebates will be set at 10% of the installation
 cost. Using the estimated coefficients from the model in exercise 6,
 calculate new probabilities and predicted shares using the new
 installation cost of heat pump. How much do the rebates raise the
 share of houses with heat pumps?  
 
 ```{r }
+#| collapse: true
 Hn <- H
-#Hn[idx(Hn, 2) == "hp", "ic"] <- 0.9 * Hn[idx(Hn, 2) == "hp", "ic"]
-#Hn <- dplyr::mutate(Hn, id = ifelse(idx$id2 == "hp", 0.9 * ic, ic))
-Hn <- dplyr::mutate(Hn, id = ifelse(id2 == "hp", 0.9 * ic, ic))
-apply(predict(mc, newdata = Hn), 2, mean)
+Hn$ic[Hn$id2 == "hp"] <- 0.9 * Hn$ic[Hn$id2 == "hp"]
+apply(predict(mc, newdata = Hn, shape = "wide"), 2, mean)
 ```
 
 > We estimate the model with the actual costs. Then we change the costs
 > and calculate probabilities with the new costs. The average
 > probability is the predicted share for an alternative. At the original
-> costs, the heat pump share is $0.0555$ (ie, about 5.5\%) This share is
-> predicted to rise to $0.0645$ (about 6.5\%) when rebates are given.
+> costs, the heat pump share is $0.0555$ (ie, about 5.5%) This share is
+> predicted to rise to $0.0645$ (about 6.5%) when rebates are given.
 
 @. Suppose a new technology is developed that provides more efficient
 central heating. The new technology costs \$200 more than the central
-electric system. However, it saves 25\% of the electricity, such that
-its operating costs are 75\% of the operating costs of `ec`. We want
+electric system. However, it saves 25% of the electricity, such that
+its operating costs are 75% of the operating costs of `ec`. We want
 to predict the potential market penetration of this technology. Note
 that there are now six alternatives: the original five alternatives
 plus this new one. Calculate the probability and predict the market
@@ -369,6 +391,7 @@ for the new technology? From which of the original five systems does
 the new technology draw the most customers? 
 
 ```{r }
+#| collapse: true
 X <- model.matrix(mc)
 Xn <- X[idx(mc, 2) == "ec",]
 Xn[, "ic"] <- Xn[, "ic"] + 200
@@ -388,12 +411,12 @@ apply(P, 2, mean)
 > The new technology captures a market share of 0.1036. That is, it gets
 > slightly more than ten percent of the market.
 
-> It draws the same percent (about 10\%) from each system. This means
+> It draws the same percent (about 10%) from each system. This means
 > that it draws the most in absolute terms from the most popular system,
 > gas central. For example, gas central drops from to $0.637$ to
 > $0.571$; this is an absolute drop of $0.637-0.571=0.065$ and a percent
-> drop of $0.065/0.637$ about 10\%. Of the 10.36\% market share that is
-> attained by the new technology, 6.5\% of it comes from gas
+> drop of $0.065/0.637$ about 10%. Of the 10.36% market share that is
+> attained by the new technology, 6.5% of it comes from gas
 > central. The other systems drop by about the same percent, which is
 > less in absolute terms.
 
@@ -406,3 +429,8 @@ apply(P, 2, mean)
 > patterns.
 
 
+
+```{r }
+#| echo: false
+options(oopts)
+```

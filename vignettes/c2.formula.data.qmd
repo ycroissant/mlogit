@@ -7,12 +7,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
+
 The formula-data interface is a critical advantage of the `R`
 software. It provides a practical way to describe the model to be
 estimated and to store data. However, the usual interface is not
 flexible enough to deal correctly with random utility
 models. Therefore, **mlogit** provides tools to construct richer
-`data.frame`s and `formula`s.
+data frames and formulas.
 
 ## Data management
 
@@ -21,7 +27,7 @@ models. Therefore, **mlogit** provides tools to construct richer
 ```{r }
 #| label: "loading mlogit"
 #| message: false
-library("mlogit")
+library(mlogit)
 ``` 
 
 It comes with several data sets that we'll use to illustrate the
@@ -56,8 +62,8 @@ each choice situation) or a *long* shape (one row for each alternative
 and, therefore, as many rows as there are alternatives for each choice
 situation).  **mlogit** deals with both format. It depends on the
 `dfidx` function of the **dfidx** package which takes as first
-argument a `data.frame` and returns a `dfidx` object, which is a
-`data.frame` in "long" format with a special data frame column which
+argument a data frame and returns a `dfidx` object, which is a
+data frame in "long" format with a special data frame column which
 contains the indexes.
 
 ### Wide format
@@ -67,6 +73,7 @@ contains the indexes.
 
 ```{r }
 #| label: "Train data"
+data("Train", package = "mlogit")
 Train$choiceid <- 1:nrow(Train)
 head(Train, 3)
 ``` 
@@ -91,7 +98,7 @@ vector that indicates their position in the data frame.^[Actually the
 `shape` argument is not mandatory if the `varying` argument is set, as
 this latter argument is only relevant for data sets in "wide" format.]
 This argument is then passed to `stats::reshape` that coerced the
-original `data.frame` in "long" format. Further arguments may be
+original data frame in "long" format. Further arguments may be
 passed to `stats::reshape`. For example, as the names of the variables are of
 the form `price_A`, one must add `sep = "_"` (the default value being
 `"."`). The `choice` argument is also mandatory because the response
@@ -128,7 +135,7 @@ Tr$time <- Tr$time / 60
 
 ```{r }
 #| label: "head of the transformed Train data set"
-head(Tr, 3)
+print(Tr, n = 3)
 ``` 
 
 An `idx` column is added to the data, which contains the three
@@ -141,16 +148,16 @@ extracted using the `idx` funtion:
 head(idx(Tr), 3)
 ``` 
 
-Since its version 0.1-0, **dfidx** deals correctly with tibbles and
-has a nice `print` method, we'll therefore coerce the original
-data frame to a tibble before using `dfidx`:
+<!-- Since its version 0.1-0, **dfidx** deals correctly with tibbles and -->
+<!-- has a nice `print` method, we'll therefore coerce the original -->
+<!-- data frame to a tibble before using `dfidx`: -->
 
-```{r}
-#| label: "dfidx with tibble"
-Tr <- dfidx(as_tibble(Train), shape = "wide", varying = 4:11, sep = "_",
-            idx = c(id = "choiceid"), idnames = c(NA, "alt"))
-Tr
-```
+<!-- ```{r} -->
+<!-- #| label: "dfidx with tibble" -->
+<!-- Tr <- dfidx(as_tibble(Train), shape = "wide", varying = 4:11, sep = "_", -->
+<!--             idx = c(id = "choiceid"), idnames = c(NA, "alt")) -->
+<!-- Tr -->
+<!-- ``` -->
 
 ### Long format
 
@@ -161,7 +168,8 @@ Tr
   
 ```{r }
 #| label: "loading ModeCanada"
-head(ModeCanada)
+data("ModeCanada", package = "mlogit")
+head(ModeCanada, 3)
 ``` 
 
 There are four transport modes (`air`, `train`, `bus` and `car`) and
@@ -247,7 +255,7 @@ argument is set to `FALSE`:
 #| label: "applying dfidx to Modecanada (5)"
 MC <- dfidx(ModeCanada, subset = noalt == 4, idx = c("case", "alt"),
             drop.index = FALSE)
-head(MC)
+print(MC, n = 3)
 ``` 
 
 ## Model description
@@ -338,7 +346,7 @@ model we've just described whatever the nature of the explanatory
 variables used.
 
 To describle the model to be estimated, **mlogit** uses `Formula`
-objects provided by the **Formula** package.^[See [@ZEIL:CROIS:10] for
+objects provided by the **Formula** package.^[See @ZEIL:CROIS:10 for
 a description of the **Formula** package.] The **Formula** package
 provides richer `formula`s, which accept multiple responses (a feature
 not used here) and multiple set of covariates. It has in particular
@@ -359,7 +367,7 @@ covariates (part 2),
 
 ```{r }
 #| label: "a three parts formula"
-library("Formula")
+library(Formula)
 f <- Formula(choice ~ cost | income + urban | ivt)
 ``` 
 
@@ -448,30 +456,18 @@ only on the unconstrained model, the *Lagrange multiplier test*
 (or *score test*), based only on the constrained model and the
 *likelihood ratio test*, based on the comparison of both models.
 
-Two of these three tests are implemented in the `lmtest` package
-[@ZEIL:HOTH:02]: `waldtest` and `lrtest`. The Wald test is also implemented 
-as `linearHypothesis` in package `car` [@FOX:WEIS:19], with a fairly 
-different syntax. We provide special methods of `waldtest` and
-`lrtest` for `mlogit` objects and we also provide a function for 
-the Lagrange multiplier (or score) test called `scoretest`.
+Two of these three tests are implemented in the **lmtest** package
+[@ZEIL:HOTH:02]: `waldtest` and `lrtest`. The Wald test is also implemented as `linearHypothesis` (or `lht`) in package **car** [@FOX:WEIS:19], with a fairly different syntax. We provide special methods of `waldtest` and `lrtest` for `mlogit` objects and we also provide a function for the Lagrange multiplier (or score) test called `scoretest`.
 
 We'll see later that the score test is especially useful for `mlogit`
 objects when one is interested in extending the basic multinomial
 logit model because, in this case, the unconstrained model may be
-difficult to estimate.  For the presentation of further tests, we
-provide a convenient `statpval` function which extract the statistic
-and the p-value from the objects returned by the testing function,
-which can be either of class `anova` or `htest`.
-
-```{r }
-#| label: "convenient statpval function"
-statpval <- function(x){
-    if (inherits(x, "anova")) 
-        result <- as.matrix(x)[2, c("Chisq", "Pr(>Chisq)")]
-    if (inherits(x, "htest")) result <- c(x$statistic, x$p.value)
-    names(result) <- c("stat", "p-value")
-    round(result, 3)
-}
-``` 
+difficult to estimate.
 
 ## Bibliography
+
+
+```{r }
+#| echo: false
+options(oopts)
+```

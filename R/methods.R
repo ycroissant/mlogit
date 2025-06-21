@@ -60,14 +60,12 @@
 #' @name miscmethods.mlogit
 #' @aliases residuals.mlogit df.residual.mlogit terms.mlogit
 #'     model.matrix.mlogit model.response.mlogit update.mlogit
-#'     print.mlogit  summary.mlogit print.summary.mlogit
-#'     predict.mlogit fitted.mlogit coef.mlogit
-#'     coef.summary.mlogit
+#'     print.mlogit summary.mlogit print.summary.mlogit predict.mlogit
+#'     fitted.mlogit coef.mlogit coef.summary.mlogit
 #' @param x,object an object of class `mlogit`
 #' @param digits the number of digits,
 #' @param width the width of the printing,
 #' @param new an updated formula for the `update` method,
-#' @param newdata a `data.frame` for the `predict` method,
 #' @param outcome a boolean which indicates, for the `fitted` and the
 #'     `residuals` methods whether a matrix (for each choice, one
 #'     value for each alternative) or a vector (for each choice, only
@@ -80,11 +78,11 @@
 #'     parameters (the elements of the Cholesky decomposition matrix),
 #'     `"cov"` for the covariance matrix and `"cor"` for the
 #'     correlation matrix and the standard deviations,
-#' @param returnData for the `predict` method, if `TRUE`, the data is
-#'     returned as an attribute,
 #' @param n,m see [dfidx::idx()]
 #' @param ... further arguments.
-#' 
+NULL
+
+ 
 #' @rdname miscmethods.mlogit
 #' @export
 residuals.mlogit <- function(object, outcome = TRUE, ...){
@@ -234,70 +232,6 @@ idx_name.mlogit <- function(x, n = NULL, m = NULL){
     idx_name(model.frame(x), n = n, m = m)
 }
 
-#' @rdname miscmethods.mlogit
-#' @export
-predict.mlogit <- function(object, newdata = NULL, returnData = FALSE, ...){
-    # if no newdata is provided, use the mean of the model.frame
-    if (is.null(newdata)){
-        newdata <- mean(object$model)
-        #YC2020/03/05 coerce it to a data.frame so that it gets transformed 
-        newdata <- as.data.frame(newdata)
-    }
-    # if newdata is not a mlogit.data, it is coerced below
-    if ((! inherits(newdata, "mlogit.data")) & (! inherits(newdata, "dfidx"))){
-        if (FALSE){
-            rownames(newdata) <- NULL
-            lev <- colnames(object$probabilities)
-            J <- length(lev)
-            choice.name <- attr(model.frame(object), "choice")
-            if (nrow(newdata) %% J)
-                stop("the number of rows of the data.frame should be a multiple of the number of alternatives")
-            attr(newdata, "index") <- data.frame(chid = rep(1:(nrow(newdata) %/% J ), each = J), alt = rep(lev, J))
-            attr(newdata, "class") <- c("mlogit.data", "data.frame")
-            if (is.null(newdata[['choice.name']])){
-                newdata[[choice.name]] <- FALSE
-                newdata[[choice.name]][1] <- TRUE # probit and hev requires that one (arbitrary) choice is TRUE
-            }
-        }
-        else{
-            # New stuff, coerce manually to an dfidx object
-            lev <- colnames(object$probabilities)
-            J <- length(lev)
-            choice.name <- paste(deparse(formula(object)[[2]]))
-            if (nrow(newdata) %% J)
-                stop("the number of rows of the data.frame should be a multiple of the number of alternatives")
-            nbid <- nrow(newdata) %/% J
-            newdata$idx <- data.frame(chid = factor(rep(1:nbid, each = J)), alt = factor(rep(lev, nbid), levels = lev))
-            class(newdata$idx) <- c("idx", "data.frame")
-            attr(newdata$idx, "ids") <- c(1, 2)
-            attr(newdata, "clseries") <- c("xseries_mlogit", "xseries")
-            attr(newdata, "class") <- c("dfidx_mlogit", "dfidx", "data.frame")
-            #YC2020/03/05 this seems incorect, replace 'choice.name' by choice.name
-   #        if (is.null(newdata[['choice.name']])){
-            if (is.null(newdata[[choice.name]])){
-                newdata[[choice.name]] <- FALSE
-                newdata[[choice.name]][1] <- TRUE # probit and hev requires that one (arbitrary) choice is TRUE
-            }
-        }
-    }
-    # if the updated model requires the use of mlogit.data, suppress all
-    # the relevant arguments
-    m <- match(c("choice", "shape", "varying", "sep",
-                 "alt.var", "chid.var", "alt.levels",
-                 "opposite", "drop.index", "id", "ranked"),
-               names(object$call), 0L)
-    if (sum(m) > 0) object$call <- object$call[ - m]
-    # update the model and get the probabilities
-    newobject <- update(object, start = coef(object, fixed = TRUE), data = newdata, iterlim = 0, print.level = 0)
-#    newobject <- update(object, start = coef(object), data = newdata, iterlim = 0, print.level = 0)
-    result <- newobject$probabilities
-    if (nrow(result) == 1){
-        result <- as.numeric(result)
-        names(result) <- colnames(object$probabilities)
-    }
-    if (returnData) attr(result, "data") <- newdata
-    result
-}
 
 #' @rdname miscmethods.mlogit
 #' @export
@@ -331,102 +265,6 @@ coef.summary.mlogit <- function(object, ...){
 ## #' Fish <- mlogit.data(Fishing, varying = c(2:9), shape = "wide", choice = "mode")
 
 
-#' Marginal effects of the covariates
-#' 
-#' The `effects` method for `mlogit` objects computes the marginal
-#' effects of the selected covariate on the probabilities of choosing the
-#' alternatives
-#' 
-#' @name effects.mlogit
-#' @param object a `mlogit` object,
-#' @param covariate the name of the covariate for which the effect should be
-#' computed,
-#' @param type the effect is a ratio of two marginal variations of the
-#' probability and of the covariate ; these variations can be absolute
-#' `"a"` or relative `"r"`. This argument is a string that contains
-#' two letters, the first refers to the probability, the second to the
-#' covariate,
-#' @param data a data.frame containing the values for which the effects should
-#' be calculated. The number of lines of this data.frame should be equal to the
-#' number of alternatives,
-#' @param ... further arguments.
-#' @return If the covariate is alternative specific, a \eqn{J \times J} matrix is
-#' returned, \eqn{J} being the number of alternatives. Each line contains the
-#' marginal effects of the covariate of one alternative on the probability to
-#' choose any alternative. If the covariate is individual specific, a vector of
-#' length \eqn{J} is returned.
-#' @export
-#' @author Yves Croissant
-#' @seealso  [mlogit()] for the estimation of multinomial logit
-#' models.
-#' @keywords regression
-#' @examples
-#' 
-#' data("Fishing", package = "mlogit")
-#' Fish <- dfidx(Fishing, varying = 2:9, choice = "mode")
-#' m <- mlogit(mode ~ price | income | catch, data = Fish)
-#' # compute a data.frame containing the mean value of the covariates in
-#' # the sample
-#' z <- with(Fish, data.frame(price = tapply(price, idx(m, 2), mean),
-#'                            catch = tapply(catch, idx(m, 2), mean),
-#'                            income = mean(income)))
-#' # compute the marginal effects (the second one is an elasticity
-#' ## IGNORE_RDIFF_BEGIN
-#' effects(m, covariate = "income", data = z)
-#' ## IGNORE_RDIFF_END
-#' effects(m, covariate = "price", type = "rr", data = z)
-#' effects(m, covariate = "catch", type = "ar", data = z)
-effects.mlogit <- function(object, covariate = NULL,
-                           type = c("aa", "ar", "rr", "ra"),
-                           data = NULL, ...){
-    type <- match.arg(type)
-    if (is.null(data)){
-        P <- predict(object, returnData = TRUE)
-        data <- attr(P, "data")
-        attr(P, "data") <- NULL
-    }
-    else P <- predict(object, data)
-    newdata <- data
-    J <- length(P)
-    alt.levels <- names(P)
-    pVar <- substr(type, 1, 1)
-    xVar <- substr(type, 2, 2)
-#    cov.list <- lapply(attr(formula(object), "rhs"), as.character)
-    nrhs <- length(formula(object))[2]
-    cov.list <- vector(length = 3, mode = "list")
-    for (i in 1:nrhs) cov.list[[i]] <-
-                          attr(terms(formula(object), rhs = i), "term.labels")
-    rhs <- sapply(cov.list, function(x) length(na.omit(match(x, covariate))) > 0)
-    rhs <- (1:length(cov.list))[rhs]
-    eps <- 1E-5
-    if (rhs %in% c(1, 3)){
-        if (rhs == 3){
-            theCoef <- paste(alt.levels, covariate, sep = ":")
-            theCoef <- coef(object)[theCoef]
-        }
-        else theCoef <- coef(object)[covariate]
-        me <- c()
-        for (l in 1:J){
-            newdata[l, covariate] <- data[l, covariate] + eps
-            newP <- predict(object, newdata)
-            me <- rbind(me, (newP - P) / eps)
-            newdata <- data
-        }
-        if (pVar == "r") me <- t(t(me) / P)
-        if (xVar == "r") me <- me * matrix(rep(data[[covariate]], J), J)
-        dimnames(me) <- list(alt.levels, alt.levels)
-    }
-    if (rhs == 2){
-        newdata[, covariate] <- data[, covariate] + eps
-        newP <- predict(object, newdata)
-        me <- (newP - P) / eps
-        if (pVar == "r") me <- me / P
-        if (xVar == "r") me <- me * data[[covariate]]
-        names(me) <- alt.levels
-    }
-    if (inherits(me, "xseries")) attr(me, "idx") <- NULL
-    unclass(me)
-}
 
 #' vcov method for mlogit objects
 #' 
@@ -893,5 +731,3 @@ ltm <- function(x, to = c("vec", "mat", "ltm")){
     result
 }
                   
-
-

@@ -1,12 +1,19 @@
 ---
 title: "Exercise 3: Mixed logit model"
 author: Kenneth Train and Yves Croissant
+bibliography: ../inst/REFERENCES.bib
 date: '`r Sys.Date()`'
 vignette: >
   %\VignetteIndexEntry{Exercise 3: Mixed logit model}
   %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
+
+
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
 
 A sample of residential electricity customers were asked a series of
 choice experiments. In each experiment, four hypothetical electricity
@@ -37,24 +44,26 @@ penalty if he/she switched to another supplier. The supplier could
 offer no contract in which case either side could stop the agreement
 at any time. This is recorded as a contract length of 0.
 
-Some suppliers were also described as being a local company or a
-"well-known" company. If the supplier was not local or well-known,
-then nothing was said about them in this regard \footnote{These are
-the data used in @REVE:TRAI:00 and @HUBE:TRAI:01.}.
+Some suppliers were also described as being a local
+ company or a "well-known" company. If the supplier was not local or
+ well-known, then nothing was said about them in this regard.^[These
+ are the data used in @REVE:TRAI:01 and @HUBE:TRAI:00.]
 
 @. Run a mixed logit model without intercepts and a normal
 distribution for the 6 parameters of the model, using 100 draws,
 halton sequences and taking into account the panel data structure.
 
 ```{r }
-library("mlogit")
+library(mlogit)
 data("Electricity", package = "mlogit")
 Electricity$chid <- 1:nrow(Electricity)
 Electr <- dfidx(Electricity, idx = list(c("chid", "id")),
                 choice = "choice", varying = 3:26, sep = "")
 ``` 
 
-```{r Elec.mxl, echo = FALSE, results = 'hide'}
+```{r }
+#| label: Elec.mxl
+#| include: false
 strt <- c(-0.9901049, -0.1985715, 2.0572983, 1.5908743, -9.1176130, -9.1946436, 0.2140892, 
           0.4019263, 1.5845577, 1.0130424, 2.5459903, 0.8854062)
 strt <- c(-0.9733844, -0.2055565,  2.0757333,  1.4756497, -9.0525423, -9.1037717,
@@ -65,7 +74,8 @@ Elec.mxl <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr,
               R = 100, halton = NA, panel = TRUE, start = strt)
 ``` 
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 Elec.mxl <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr, 
               rpar=c(pf = 'n', cl = 'n', loc = 'n', wk = 'n', 
                      tod = 'n', seas = 'n'), 
@@ -73,7 +83,7 @@ Elec.mxl <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr,
 ``` 
 
 ```{r } 
-summary(Elec.mxl)
+gaze(Elec.mxl)
 ``` 
 
 @. (a) Using the estimated mean coefficients, determine the amount
@@ -81,7 +91,8 @@ that a customer with average coefficients for price and length is
 willing to pay for an extra year of contract length.
 
 ```{r }
-coef(Elec.mxl)['cl'] / coef(Elec.mxl)['pf']
+#| collapse: true
+unname(coef(Elec.mxl)['cl'] / coef(Elec.mxl)['pf'])
 ``` 
 
 > The mean coefficient of length is -0.20. The consumer with this
@@ -97,6 +108,7 @@ long term contracts (ie have a negative coefficient for the length.)
 \begin{answer}[5]
 
 ```{r }
+#| collapse: true
 pnorm(- coef(Elec.mxl)['cl'] / coef(Elec.mxl)['sd.cl'])
 ``` 
 
@@ -127,6 +139,7 @@ distribution of wtp is the ratio of two distributions, which is harder
 to work with.
 
 ```{r }
+#| collapse: true
 pnorm(- coef(Elec.mxl)['pf'] / coef(Elec.mxl)['sd.pf'])
 ``` 
 
@@ -137,7 +150,9 @@ pnorm(- coef(Elec.mxl)['pf'] / coef(Elec.mxl)['sd.pf'])
 > coefficients. Essentially no one is estimated to have a positive price
 > coefficient.
 
-```{r Elec.mxl2, echo = FALSE, results = 'hide'}
+```{r}
+#| label: Elec.mxl2
+#| include: false
 strt <- c(-0.8710529, -0.2082428,  2.0460954,  1.4473149,  8.4091315,  8.5432555,  
           0.3687390,  1.5773527,  0.8837160,  2.5638874,  2.0722178)
 strt <- c(-0.8799042, -0.2170603,  2.0922916,  1.4908937, -8.5818566, -8.5832956,
@@ -148,7 +163,8 @@ Elec.mxl2 <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr,
                    R = 100, halton = NA,  panel = TRUE, start = strt)
 ```
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 Elec.mxl2 <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr, 
                    rpar = c(cl = 'n', loc = 'n', wk = 'n', 
                             tod = 'n', seas = 'n'), 
@@ -165,7 +181,9 @@ people dislike using a known company. Revise the program to give the
 coefficient of `wk` a uniform distribution between zero and b,where
 b is estimated (do this with the price coefficient fixed).
 
-```{r Elec.mxl3, echo = FALSE, results = 'hide'}
+```{r}
+#| label: Elec.mxl3
+#| include: false
 strt <- c(-0.8685207, -0.2103447,  2.0269971,  1.4773713,  8.3994921,  8.4976319, 
           0.3693250,  1.5862809,  1.5916990,  2.5775540,  2.0405350)
 strt <- c(-0.9303806,  -0.2478098,   2.3808084,   1.5921023,  -5.8173333, -10.7742475,
@@ -176,7 +194,8 @@ Elec.mxl3 <- update(Elec.mxl, rpar = c(cl = 'n', loc = 'n', wk = 'u',
                                        tod = 'n', seas = 'n'), start = strt)
 ```   
   
-```{r eval = FALSE}
+```{r}
+#| eval: false
 Elec.mxl3 <- update(Elec.mxl, rpar = c(cl = 'n', loc = 'n', wk = 'u', 
                                        tod = 'n', seas = 'n'))
 ```   
@@ -184,7 +203,7 @@ Elec.mxl3 <- update(Elec.mxl, rpar = c(cl = 'n', loc = 'n', wk = 'u',
 > The price coefficient is uniformly distributed with parameters 1.541
 > and 1.585.
 
-```{r }
+```{r}
 summary(Elec.mxl3)
 rpar(Elec.mxl3, 'wk')
 summary(rpar(Elec.mxl3, 'wk'))
@@ -232,19 +251,24 @@ mean of the lognormal is $\exp(b+0.5s^2)$ and the standard deviation
 is the mean times $\sqrt{(\exp(s^2))-1}$.
 
 ```{r }
-Electr <- dfidx(Electricity, idx = list(c("chid", "id")), choice = "choice",
-                varying = 3:26, sep = "", opposite = c("tod", "seas"))
+Electr <- dfidx(Electricity, idx = list(c("chid", "id")),
+                choice = "choice", varying = 3:26,
+                sep = "", opposite = c("tod", "seas"))
 ``` 
 
-```{r Elec.mxl4, echo = FALSE, results = 'hide'}
+```{r}
+#| label: Elec.mxl4
+#| include: false
 strt <- c(-0.8689874, -0.2113327,  2.0238880,  1.4791236,  2.1123811,  2.1242071,
  0.3731202,  1.5485101,  1.5217919,  0.3670763,  0.2753497)
 Elec.mxl4 <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr, 
-              rpar = c(cl = 'n', loc = 'n', wk = 'u', tod = 'ln', seas = 'ln'), 
-              R = 100, halton = NA, panel = TRUE, start = strt)
+                    rpar = c(cl = 'n', loc = 'n', wk = 'u',
+                             tod = 'ln', seas = 'ln'), 
+                    R = 100, halton = NA, panel = TRUE, start = strt)
 ``` 
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 Elec.mxl4 <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr, 
               rpar = c(cl = 'n', loc = 'n', wk = 'u', tod = 'ln', seas = 'ln'), 
               R = 100, halton = NA, panel = TRUE)
@@ -254,7 +278,7 @@ Elec.mxl4 <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr,
 summary(Elec.mxl4)
 ``` 
 
-```{r }
+```{r}
 plot(rpar(Elec.mxl4, 'seas'))
 ``` 
 
@@ -263,7 +287,9 @@ correlation between random parameters. Compute the correlation matrix
 of the random parameters. Test the hypothesis that the random
 parameters are uncorrelated.
 
-```{r Elec.mxl5, echo = FALSE, results = 'hide'}
+```{r}
+#| label: Elec.mxl5
+#| include: false
 strt <-  c(-0.917703974, -0.215851727,  2.392570989,  1.747531863,  2.155462393,
            2.169548103,  0.396252325,  0.617497150, -2.071718067,  0.195238185,
            -1.236664544,  0.643190285,  0.001982314,  0.062508396,  0.160672338,
@@ -272,18 +298,28 @@ strt <-  c(-0.917703974, -0.215851727,  2.392570989,  1.747531863,  2.155462393,
 Elec.mxl5 <- update(Elec.mxl4, correlation = TRUE, start = strt)
 ``` 
   
-```{r eval = FALSE}
+```{r}
+#| eval: false
 Elec.mxl5 <- update(Elec.mxl4, correlation = TRUE)
 ``` 
 
 ```{r }
 summary(Elec.mxl5)
 cor.mlogit(Elec.mxl5)
-lrtest(Elec.mxl5, Elec.mxl4)
-waldtest(Elec.mxl5, correlation = FALSE)
-scoretest(Elec.mxl4, correlation = TRUE)
-``` 
+```
+
+```{r }
+#| collapse: true
+lrtest(Elec.mxl5, Elec.mxl4) |> gaze()
+waldtest(Elec.mxl5, correlation = FALSE) |> gaze()
+scoretest(Elec.mxl4, correlation = TRUE) |> gaze()
+```
 
 > The three tests clearly reject the hypothesis that the random
 > parameters are uncorrelated.
 
+
+```{r }
+#| echo: false
+options(oopts)
+```

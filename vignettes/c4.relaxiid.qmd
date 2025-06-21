@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r }
+#| echo: false
+oopts <-options(width = 70)
+```
+
 In the previous section, we assumed that the error terms were iid
 (identically and independently distributed), i.e., uncorrelated and
 homoscedastic. Extensions of the basic multinomial logit model have
@@ -151,14 +156,15 @@ to `TRUE`:
 ```{r}
 #| label: "heteroscedastic model for the ModeCanada data"
 #| message: false
-library("mlogit")
+library(mlogit)
 MC <- dfidx(ModeCanada, subset = noalt == 4)
 ml.MC <- mlogit(choice ~ freq + cost + ivt + ovt | urban + income, MC, 
-reflevel = 'car', alt.subset = c("car", "train", "air"))
+                reflevel = 'car', alt.subset = c("car", "train", "air"))
 hl.MC <- mlogit(choice ~ freq + cost + ivt + ovt | urban + income, MC, 
-reflevel = 'car', alt.subset = c("car", "train", "air"), heterosc = TRUE, hessian = FALSE)
+                reflevel = 'car', alt.subset = c("car", "train", "air"),
+                heterosc = TRUE, hessian = FALSE)
 coef(summary(hl.MC))[11:12, ]
-``` 
+```
 
 The variance of the error terms of `train` and `air` are respectively
 higher and lower than the variance of the error term of `car` (set to
@@ -173,25 +179,26 @@ the homoscedasticity hypothesis.
 
 ```{r}
 #| label: homoscedasticity tests lr and Wald (1)"
-lr.heter <- lrtest(hl.MC, ml.MC)
-wd.heter <- waldtest(hl.MC, heterosc = FALSE)
+#| eval: false
+lrtest(hl.MC, ml.MC)
+waldtest(hl.MC, heterosc = FALSE)
 ``` 
 
 or, more simply:
 
 ```{r}
 #| label: "homoscedasticity tests lr and Wald (2)"
-#| results: false
-lrtest(hl.MC)
-waldtest(hl.MC)
+#| collapse: true
+lrtest(hl.MC) |> gaze()
+waldtest(hl.MC) |> gaze()
 ``` 
-
-The Wald test can also be computed using the `linearHypothesis`
+The Wald test can also be computed using the `lht`
 function from the `car` package:
 
 ```{r}
 #| label: "homoscedasticity tests: Wald test"
-lh.heter <- car::linearHypothesis(hl.MC, c('sp.air = 1', 'sp.train = 1'))
+#| collapse: true
+car::lht(hl.MC, c('sp.air = 1', 'sp.train = 1')) |> gaze()
 ``` 
 
 For the score test, we provide the constrained model as argument,
@@ -201,25 +208,8 @@ argument which defines the unconstrained model, which is in this case
 
 ```{r}
 #| label: "homoscedasticity tests: score test"
-sc.heter <- scoretest(ml.MC, heterosc = TRUE)
-``` 
-
-```{r}
-#| label: "convenient statpval function 2"
-#| include: false
-statpval <- function(x){
-    if (inherits(x, "anova")) 
-        result <- as.matrix(x)[2, c("Chisq", "Pr(>Chisq)")]
-    if (inherits(x, "htest")) result <- c(x$statistic, x$p.value)
-    names(result) <- c("stat", "p-value")
-    round(result, 3)
-}
-``` 
-
-```{r}
-#| label: "homoscedasticity tests results"
-sapply(list(wald = wd.heter, lh = lh.heter, score = sc.heter,
-            lr = lr.heter), statpval)
+#| collapse: true
+scoretest(ml.MC, heterosc = TRUE) |> gaze()
 ``` 
 
 The homoscedasticity hypothesis is strongly rejected using the Wald
@@ -250,8 +240,8 @@ We first estimate a multinomial logit model:
 
 ```{r}
 #| label: "multinomial logit for JapaneseFDI"
-ml.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) + scrate +
-ctaxrate | 0, data = jfdi)
+ml.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) +
+                     scrate + ctaxrate | 0, data = jfdi)
 ``` 
 
 Note that, as the covariates are only alternative specific, the
@@ -265,9 +255,10 @@ mono-region.
 
 ```{r}
 #| label: "lower model estimation"
-#jfdi$country <- jfdi$country
 lm.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) | 0,
-data = jfdi, subset = country == choice.c & ! country %in% c("PT", "IE"))
+                 data = jfdi,
+                 subset = country == choice.c &
+                     ! country %in% c("PT", "IE"))
 ``` 
 
 We next use the fitted lower model in order to compute the inclusive
@@ -290,12 +281,13 @@ ways to use the `logsum` function:
 
 ```{r}
 #| label: "use of the logsum function"
+#| collapse: true
 lmformula <- formula(lm.fdi)
 head(logsum(ml.fdi, data = jfdi, formula = lmformula, type = "group"), 2)
 head(logsum(ml.fdi, data = jfdi, formula = lmformula, type = "global"))
 head(logsum(ml.fdi, data = jfdi, formula = lmformula, output = "obs"))
 head(logsum(ml.fdi, data = jfdi, formula = lmformula, type = "global",
-output = "obs"))
+            output = "obs"))
 ``` 
 
 To add the inclusive values in the original `data.frame`, we use
@@ -305,7 +297,7 @@ value is `"group"`:
 ```{r}
 #| label: "adding the logsum to the data"
 JapaneseFDI$iv <- logsum(lm.fdi, data = jfdi, formula = lmformula,
-output = "obs")
+                         output = "obs")
 ``` 
 
 We next select the relevant variables for the estimation of the upper
@@ -315,8 +307,9 @@ response (`choice.c`) to a logical for the chosen country.
 
 ```{r}
 #| label: "data suitable for the upper model"
-JapaneseFDI.c <- subset(JapaneseFDI, 
-select = c("firm", "country", "choice.c", "scrate", "ctaxrate", "iv"))
+JapaneseFDI.c <- subset(JapaneseFDI,
+                        select = c("firm", "country", "choice.c",
+                                   "scrate", "ctaxrate", "iv"))
 JapaneseFDI.c <- unique(JapaneseFDI.c)
 JapaneseFDI.c$choice.c <- with(JapaneseFDI.c, choice.c == country)
 ```
@@ -326,7 +319,8 @@ inclusive value as a covariate.
 
 ```{r}
 #| label: "estimation of the upper model"
-jfdi.c <- dfidx(JapaneseFDI.c, choice = "choice.c", idnames = c("chid", "alt"))
+jfdi.c <- dfidx(JapaneseFDI.c, choice = "choice.c",
+                idnames = c("chid", "alt"))
 um.fdi <- mlogit(choice.c ~ scrate + ctaxrate + iv | 0, data = jfdi.c)
 ```
 
@@ -358,10 +352,11 @@ every nest.
 
 ```{r}
 #| label: "nested logit models"
-nl.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) + scrate +
-ctaxrate | 0, data = jfdi, nests = TRUE, un.nest.el = TRUE)
-nl2.fdi <- update(nl.fdi, un.nest.el = FALSE, constPar = c('iv:PT' = 1,
-'iv:IE' = 1))
+nl.fdi <- mlogit(choice ~ log(wage) + unemp + elig + log(area) +
+                     scrate + ctaxrate | 0, data = jfdi,
+                 nests = TRUE, un.nest.el = TRUE)
+nl2.fdi <- update(nl.fdi, un.nest.el = FALSE,
+                  constPar = c('iv:PT' = 1, 'iv:IE' = 1))
 ``` 
 
 The results of the fitted models are presented in @tbl-nlogit.
@@ -369,12 +364,7 @@ The results of the fitted models are presented in @tbl-nlogit.
 ```{r}
 #| label: tbl-nlogit
 #| tbl-cap: "Choice by Japanese firms of a european region."
-## modelsummary::msummary(list('Mult. logit' = ml.fdi,
-##                             'Lower model' = lm.fdi,
-##                             'Upper model' = um.fdi,
-##                             'Upper model' = um2.fdi,
-##                             'Nested logit' = nl.fdi,
-##                             'Nested logit' = nl2.fdi))
+#| echo: false
 modelsummary::msummary(list('Mult. logit' = ml.fdi,
                             'Upper model' = um.fdi,
                             'Upper model' = um2.fdi,
@@ -397,25 +387,22 @@ which describes the nesting structure that one wants to test.
 
 ```{r}
 #| label: "test of no nests"
-lr.nest <- lrtest(nl2.fdi)
-wd.nest <- waldtest(nl2.fdi)
-sc.nest <- scoretest(ml.fdi, nests = TRUE, constPar = c('iv:PT' = 1,
-'iv:IE' = 1))
+#| collapse: true
+lrtest(nl2.fdi) |> gaze()
+waldtest(nl2.fdi) |> gaze()
+scoretest(ml.fdi, nests = TRUE,
+          constPar = c('iv:PT' = 1, 'iv:IE' = 1))  |>
+    gaze()
 ``` 
 
-The Wald test can also be performed using the `linearHypothesis`
+The Wald test can also be performed using the `lht`
 function:
 
 ```{r}
 #| label: "test of no nests with linhyp"
-lh.nest <- car::linearHypothesis(nl2.fdi, c("iv:BE = 1", "iv:DE = 1",
-"iv:ES = 1", "iv:FR = 1", "iv:IT = 1", "iv:NL = 1", "iv:UK = 1"))
-``` 
-
-```{r}
-#| label: "results of the tests of no nests"
-sapply(list(wald = wd.nest, lh = lh.nest, score = sc.nest, lr = lr.nest),
-statpval)
+#| collapse: true
+car::lht(nl2.fdi, c("iv:BE = 1", "iv:DE = 1", "iv:ES = 1", "iv:FR = 1",
+                    "iv:IT = 1", "iv:NL = 1", "iv:UK = 1")) |> gaze()
 ``` 
 
 The three tests reject the null hypothesis of no correlation. We next
@@ -423,21 +410,24 @@ test the hypothesis that all the nest elasticities are equal.
 
 ```{r}
 #| label: "computing the test for equal iv coefficients"
-lr.unest <- lrtest(nl2.fdi, nl.fdi)
-wd.unest <- waldtest(nl2.fdi, un.nest.el = TRUE)
-sc.unest <- scoretest(ml.fdi, nests = TRUE, un.nest.el = FALSE,
-constPar = c('iv:PT' = 1, 'iv:IE' = 1))
-lh.unest <- car::linearHypothesis(nl2.fdi, c("iv:BE = iv:DE", "iv:BE = iv:ES", 
-"iv:BE = iv:FR", "iv:BE = iv:IT", "iv:BE = iv:NL", "iv:BE = iv:UK"))
+#| collapse: true
+lrtest(nl2.fdi, nl.fdi) |> gaze()
+waldtest(nl2.fdi, un.nest.el = TRUE) |> gaze()
+scoretest(ml.fdi, nests = TRUE, un.nest.el = FALSE,
+          constPar = c('iv:PT' = 1, 'iv:IE' = 1)) |> gaze()
+car::lht(nl2.fdi, c("iv:BE = iv:DE", "iv:BE = iv:ES",
+                    "iv:BE = iv:FR", "iv:BE = iv:IT",
+                    "iv:BE = iv:NL", "iv:BE = iv:UK")) |>
+    gaze()
 ``` 
 
-```{r}
-#| label: "results of the tests of equal iv coefficients"
-sapply(list(wald = wd.unest, lh = lh.unest, score = sc.unest,
-lr = lr.unest), statpval)
-```
 
 Once again, the three tests strongly reject the hypothesis.
 
 ## Bibliography
 
+
+```{r }
+#| echo: false
+options(oopts)
+```

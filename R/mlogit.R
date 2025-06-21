@@ -2,6 +2,10 @@
 #' @export
 dfidx::dfidx
 
+#' @importFrom micsr gaze
+#' @export
+micsr::gaze
+
 #' @importFrom dfidx idx
 #' @export
 dfidx::idx
@@ -9,10 +13,6 @@ dfidx::idx
 #' @importFrom dfidx idx_name
 #' @export
 dfidx::idx_name
-
-#' @importFrom dfidx as_tibble
-#' @export
-dfidx::as_tibble
 
 #' Multinomial logit model
 #' 
@@ -83,6 +83,8 @@ dfidx::as_tibble
 #'     probit models),
 #' @param hessian a boolean, wheter or not to compute the hessian: the
 #'     default is false
+#' @param param a vector of coefficients for which the prediction
+#'     should be performed
 #' @param ... further arguments passed to `mlogit.data` or
 #'     `mlogit.optim`.
 #' 
@@ -238,7 +240,8 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
                    nests = NULL, un.nest.el = FALSE, unscaled = FALSE,
                    heterosc = FALSE, rpar = NULL, probit = FALSE,
                    R = 40, correlation = FALSE, halton = NULL, random.nb = NULL,
-                   panel = FALSE, estimate = TRUE, seed = 10, hessian = NULL, ...){
+                   panel = FALSE, estimate = TRUE, seed = 10, hessian = NULL,
+                   param = NULL, ...){
     callT <- match.call(expand.dots = TRUE)
     formula <- callT$formula <- Formula(formula)
     nframe <- length(sys.calls())
@@ -378,7 +381,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     mf <- eval(mf, parent.frame())  
     .terms <- attr(mf, "terms")
     if (! estimate) return(mf)
-
+    
     # 4 ###########################################################
     # get the dimensions of the model
     ###############################################################
@@ -447,6 +450,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     else Xs <- NULL
     attr(mf, "formula") <- formula
     X <- model.matrix(mf, rhs = 1:3)
+
     formula <- cformula
     K <- ncol(X)
     .df.residual <- N - K
@@ -516,17 +520,21 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
             names(nests) <- names.nests
         }
     }
-
+        
+    
     # 6 ######################################################
     # compute the starting values
     ##########################################################
 
+    if (is.null(param)){
+    
     start <- mlogit.start(formula = formula, data = data, mf = mf, start = start,
                           un.nest.el = un.nest.el, nests = nests, heterosc = heterosc,
                           rpar = rpar, probit = probit, correlation = correlation,
                           alt.subset = alt.subset, reflevel = reflevel)
     names.sup.coef <- attr(start, "names.sup.coef")
 
+    }
     # 7 ###################################################################
     # Estimate the model using mlogit.optim and passing the correct arguments
     #######################################################################
@@ -550,7 +558,7 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
     if (probit) if (is.null(opt$constPar)) opt$constPar <- names.sup.coef[1]
 
     # include the automatically computed starting values
-    opt$start <- start
+    if (is.null(param)) opt$start <- start
 
     # select the argument of mlogit that should be passed to
     # mlogit.optim
@@ -593,6 +601,15 @@ mlogit <- function(formula, data, subset, weights, na.action, start = NULL,
         opt[c('logLik', 'nests', 'un.nest.el', 'unscaled')] <-
             list(as.name('lnl.nlogit'), as.name('nests'),
                  as.name('un.nest.el'), as.name('unscaled'))
+
+
+    if (! is.null(param)){
+        opt$param <- param
+        opt[[1]] <- opt$logLik
+        opt[c("method", "logLik", "start")] <- NULL
+        return(attr(eval(opt), "probabilities"))
+    }
+
     x <- eval(opt, sys.frame(which = nframe))
     
     # Construct a logLik function with only one argument
