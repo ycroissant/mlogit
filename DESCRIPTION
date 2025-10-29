@@ -1,6 +1,6 @@
 Package: mlogit
 Version: 1.2-0
-Date: 2025-06-16
+Date: 2025-10-129
 Title: Multinomial Logit Models
 Authors@R: person("Yves", "Croissant", role = c("aut", "cre"), email = "yves.croissant@univ-reunion.fr")
 Depends: R (>= 3.5.0)
