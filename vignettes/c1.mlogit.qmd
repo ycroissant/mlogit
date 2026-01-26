@@ -1,9 +1,13 @@
 ---
 title: "1. Introduction"
 bibliography: ../inst/REFERENCES.bib
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{mlogit}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 

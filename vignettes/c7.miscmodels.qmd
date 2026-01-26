@@ -1,9 +1,13 @@
 ---
 title: "7. Miscellaneous models"
 bibliography: ../inst/REFERENCES.bib
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{7. Miscellaneous models}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 

@@ -1,9 +1,13 @@
 ---
 title: "3. Random utility model and the multinomial logit model"
 bibliography: ../inst/REFERENCES.bib
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{3. Random utility model and the multinomial logit model}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -429,7 +433,7 @@ variation of the covariate.
 ```{r}
 #| label: "marginal effects for an individual specific covariate"
 #| collapse: true
-#effects(ml.MC1, covariate = "income", type = "ar")
+effects(ml.MC1, covariate = "income", type = "ar")
 ``` 
 
 The results indicate that, for a 100\% increase of income, the
@@ -442,7 +446,7 @@ displayed.
 ```{r}
 #| label: "marginal effects for an alternative specific covariate"
 #| collapse: true
-#effects(ml.MC1, covariate = "cost", type = "rr")
+effects(ml.MC1, covariate = "cost", type = "rr")
 ``` 
 
 The cell in the $l^{\mbox{th}}$ row and the $c^{\mbox{th}}$ column

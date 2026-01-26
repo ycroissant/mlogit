@@ -1,9 +1,13 @@
 ---
 title: "5. The random parameters (or mixed) logit model"
 bibliography: ../inst/REFERENCES.bib
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{5. The random parameters (or mixed) logit model}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 

@@ -2,9 +2,13 @@
 title: "Exercise 1: Multinomial logit model"
 author: Kenneth Train and Yves Croissant
 date: '`r Sys.Date()`'
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{Exercise 1: Multinomial logit model}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 

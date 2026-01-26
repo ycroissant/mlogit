@@ -3,9 +3,13 @@ title: "Exercise 4: Multinomial probit"
 author: Kenneth Train and Yves Croissant
 bibliography: ../inst/REFERENCES.bib
 date: '`r Sys.Date()`'
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{Exercise 4: Multinomial probit}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 

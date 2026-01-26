@@ -1,9 +1,13 @@
 ---
 title: "2. Data management, model description and testing"
 bibliography: ../inst/REFERENCES.bib
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{2. Data management, model description and testing}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 

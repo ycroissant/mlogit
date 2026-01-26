@@ -23,6 +23,7 @@ A dataframe containing :
 \item costz: cost per mile of travel (tens of cents) : home recharging for electric vehicule, station refueling otherwise,
 \item stationz: fraction of stations that can refuel/recharge vehicule.
 }
+
 }
 \source{
 \href{https://journaldata.zbw.eu/journals/jae}{Journal of Applied Econometrics data archive}.

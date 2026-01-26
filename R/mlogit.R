@@ -31,7 +31,7 @@ dfidx::idx_name
 #' @importFrom stats terms update vcov dunif effects
 #' @importFrom micsr gauss_laguerre
 #' @param formula a symbolic description of the model to be estimated,
-#' @param data the data: an `mlogit.data` object or an ordinary
+#' @param data the data: a `dfidx` object or an ordinary
 #'     `data.frame`,
 #' @param subset an optional vector specifying a subset of
 #'     observations for `mlogit`,
@@ -85,14 +85,14 @@ dfidx::idx_name
 #'     default is false
 #' @param param a vector of coefficients for which the prediction
 #'     should be performed
-#' @param ... further arguments passed to `mlogit.data` or
+#' @param ... further arguments passed to `dfidx` or
 #'     `mlogit.optim`.
 #' 
 #' @details For how to use the formula argument, see [Formula()].
 #' 
 #' The `data` argument may be an ordinary `data.frame`. In this case,
 #' some supplementary arguments should be provided and are passed to
-#' [mlogit.data()]. Note that it is not necessary to indicate the
+#' [dfidx::dfidx()]. Note that it is not necessary to indicate the
 #' choice argument as it is deduced from the formula.
 #' 
 #' The model is estimated using the [mlogit.optim()].
@@ -142,7 +142,7 @@ dfidx::idx_name
 #' 
 #' @export
 #' @author Yves Croissant
-#' @seealso [mlogit.data()] to shape the data. [nnet::multinom()] from
+#' @seealso [nnet::multinom()] from
 #'     package `nnet` performs the estimation of the multinomial logit
 #'     model with individual specific variables. [mlogit.optim()]
 #'     details about the optimization function.

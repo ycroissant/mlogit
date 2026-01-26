@@ -51,36 +51,37 @@
 ## #' @param fixed if `FALSE` (the default), constant coefficients are
 ## #'     not returned,
 
+# !!! on vire model.response.mlogit de @aliases ci-dessous
 
 
-#' Methods for mlogit objects
-#'
-#' Miscellaneous methods for `mlogit` objects.
-#' 
-#' @name miscmethods.mlogit
-#' @aliases residuals.mlogit df.residual.mlogit terms.mlogit
-#'     model.matrix.mlogit model.response.mlogit update.mlogit
-#'     print.mlogit summary.mlogit print.summary.mlogit predict.mlogit
-#'     fitted.mlogit coef.mlogit coef.summary.mlogit
-#' @param x,object an object of class `mlogit`
-#' @param digits the number of digits,
-#' @param width the width of the printing,
-#' @param new an updated formula for the `update` method,
-#' @param outcome a boolean which indicates, for the `fitted` and the
-#'     `residuals` methods whether a matrix (for each choice, one
-#'     value for each alternative) or a vector (for each choice, only
-#'     a value for the alternative chosen) should be returned,
-#' @param type one of `outcome` (probability of the chosen
-#'     alternative), `probabilities` (probabilities for all the
-#'     alternatives), `parameters` for individual-level random
-#'     parameters for the fitted method, how the correlated random
-#'     parameters should be displayed : `"chol"` for the estimated
-#'     parameters (the elements of the Cholesky decomposition matrix),
-#'     `"cov"` for the covariance matrix and `"cor"` for the
-#'     correlation matrix and the standard deviations,
-#' @param n,m see [dfidx::idx()]
-#' @param ... further arguments.
-NULL
+## #' Methods for mlogit objects
+## #'
+## #' Miscellaneous methods for `mlogit` objects.
+## #' 
+## #' @name miscmethods.mlogit
+## #' @aliases residuals.mlogit df.residual.mlogit terms.mlogit
+## #'     model.matrix.mlogit update.mlogit
+## #'     print.mlogit summary.mlogit print.summary.mlogit predict.mlogit
+## #'     fitted.mlogit coef.mlogit coef.summary.mlogit
+## #' @param x,object an object of class `mlogit`
+## #' @param digits the number of digits,
+## #' @param width the width of the printing,
+## #' @param new an updated formula for the `update` method,
+## #' @param outcome a boolean which indicates, for the `fitted` and the
+## #'     `residuals` methods whether a matrix (for each choice, one
+## #'     value for each alternative) or a vector (for each choice, only
+## #'     a value for the alternative chosen) should be returned,
+## #' @param type one of `outcome` (probability of the chosen
+## #'     alternative), `probabilities` (probabilities for all the
+## #'     alternatives), `parameters` for individual-level random
+## #'     parameters for the fitted method, how the correlated random
+## #'     parameters should be displayed : `"chol"` for the estimated
+## #'     parameters (the elements of the Cholesky decomposition matrix),
+## #'     `"cov"` for the covariance matrix and `"cor"` for the
+## #'     correlation matrix and the standard deviations,
+## #' @param n,m see [dfidx::idx()]
+## #' @param ... further arguments.
+## NULL
 
  
 #' @rdname miscmethods.mlogit
@@ -109,13 +110,13 @@ model.matrix.mlogit <- function(object, ...){
     model.matrix(object$model)
 }
 
-#' @rdname miscmethods.mlogit
-#' @method model.response mlogit
-#' @export
-model.response.mlogit <- function(object, ...){
-    y.name <- paste(deparse(object$formula[[2]]))
-    object$model[[y.name]]
-}
+## #' @rdname miscmethods.mlogit
+## #' @method model.response mlogit
+## #' @export
+## model.response.mlogit <- function(object, ...){
+##     y.name <- paste(deparse(object$formula[[2]]))
+##     object$model[[y.name]]
+## }
 
 #' @rdname miscmethods.mlogit
 #' @export

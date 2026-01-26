@@ -34,7 +34,7 @@ mlogit(
 \arguments{
 \item{formula}{a symbolic description of the model to be estimated,}
 
-\item{data}{the data: an \code{mlogit.data} object or an ordinary
+\item{data}{the data: a \code{dfidx} object or an ordinary
 \code{data.frame},}
 
 \item{subset}{an optional vector specifying a subset of
@@ -110,7 +110,7 @@ default is false}
 \item{param}{a vector of coefficients for which the prediction
 should be performed}
 
-\item{...}{further arguments passed to \code{mlogit.data} or
+\item{...}{further arguments passed to \code{dfidx} or
 \code{mlogit.optim}.}
 }
 \value{
@@ -137,11 +137,11 @@ Estimation by maximum likelihood of the multinomial logit model,
 with alternative-specific and/or individual specific variables.
 }
 \details{
-For how to use the formula argument, see \code{\link[=Formula]{Formula()}}.
+For how to use the formula argument, see \code{\link[Formula:Formula]{Formula::Formula()}}.
 
 The \code{data} argument may be an ordinary \code{data.frame}. In this case,
 some supplementary arguments should be provided and are passed to
-\code{\link[=mlogit.data]{mlogit.data()}}. Note that it is not necessary to indicate the
+\code{\link[dfidx:dfidx]{dfidx::dfidx()}}. Note that it is not necessary to indicate the
 choice argument as it is deduced from the formula.
 
 The model is estimated using the \code{\link[=mlogit.optim]{mlogit.optim()}}.
@@ -261,7 +261,7 @@ g <- mlogit(ch ~ own | hours, Game, varying = 1:12, ranked = TRUE,
 \insertRef{TRAI:09}{mlogit}
 }
 \seealso{
-\code{\link[=mlogit.data]{mlogit.data()}} to shape the data. \code{\link[nnet:multinom]{nnet::multinom()}} from
+\code{\link[nnet:multinom]{nnet::multinom()}} from
 package \code{nnet} performs the estimation of the multinomial logit
 model with individual specific variables. \code{\link[=mlogit.optim]{mlogit.optim()}}
 details about the optimization function.

@@ -1,6 +1,6 @@
 Package: mlogit
-Version: 1.2-0
-Date: 2025-10-129
+Version: 2.0-0
+Date: 2026-01-26
 Title: Multinomial Logit Models
 Authors@R: person("Yves", "Croissant", role = c("aut", "cre"), email = "yves.croissant@univ-reunion.fr")
 Depends: R (>= 3.5.0)
@@ -14,7 +14,7 @@ VignetteBuilder: quarto
 Encoding: UTF-8
 License: GPL (>=2)
 URL: https://cran.r-project.org/package=mlogit
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack

@@ -422,7 +422,6 @@ NULL
 #' @name Car
 #' @docType data
 #' @format A dataframe containing :
-#'
 #' - choice: choice of a vehicule amoung 6 propositions, 
 #' - college: college education?,
 #' - hsg2: size of household greater than 2? 
@@ -438,7 +437,6 @@ NULL
 #' - spacez: fraction of luggage space in comparable new gas vehicule, 
 #' - costz: cost per mile of travel (tens of cents) : home recharging for electric vehicule, station refueling otherwise, 
 #' - stationz: fraction of stations that can refuel/recharge vehicule.
-#'
 #' @source
 #' [Journal of Applied Econometrics data archive](https://journaldata.zbw.eu/journals/jae).
 #' 

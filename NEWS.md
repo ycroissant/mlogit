@@ -1,4 +1,4 @@
-# mlogit 1.1-2
+# mlogit 2.0-0
 
 * micsr::gaze is now re-exported
 
@@ -68,6 +68,14 @@
 
 * bug fixed in mlogit (the to.omit variable could be NULL which
   caused a bug) thanks to Matt Woeran
+
+
+* update of the Rout.save files
+
+# mlogit 1.1-2
+
+* roxygenize is re-run, the link tags are suppressed
+
 
 # mlogit 1.1-1
 

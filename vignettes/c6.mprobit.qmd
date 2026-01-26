@@ -1,9 +1,13 @@
 ---
 title: "6. Multinomial probit"
 bibliography: ../inst/REFERENCES.bib
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{6. The multinomial probit model}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -346,7 +350,6 @@ library(mlogit)
 Fish <- dfidx(Fishing, varying = 2:9, choice = "mode",
               idnames = c("chid", "alt"))
 ``` 
-
 
 ```{r}
 #| label: "mprobit estimation"

@@ -1,9 +1,13 @@
 ---
 title: "4. Logit models relaxing the iid hypothesis"
 bibliography: ../inst/REFERENCES.bib
+format:
+  html:
+    toc: true
+    html-math-method: mathjax
 vignette: >
+  %\VignetteEngine{quarto::html}
   %\VignetteIndexEntry{4. Logit models relaxing the iid hypothesis}
-  %\VignetteEngine{quarto::pdf}
   %\VignetteEncoding{UTF-8}
 ---
 
