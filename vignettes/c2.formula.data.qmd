@@ -332,7 +332,7 @@ also denoted scale heterogeneity.^[This kind of heteroscedasticity
 shouldn't be confused with alternative heteroscedasticity ($\sigma^2_j
 \neq \sigma^2_k$) which is introduced in the heteroskedastic logit
 model described in vignette [relaxing the iid
-hypothesis](./c4.relaxiid.pdf)].  As the overall scale of utility is
+hypothesis](./c4.relaxiid.html)].  As the overall scale of utility is
 irrelevant, the utility can also be writen as: $U_{ij}^* = U_{ij} /
 \sigma_i = V_{ij}/\sigma_i + \epsilon_{ij}$, i.e., with homoscedastic
 errors. if $V_{ij}$ is a linear combination of covariates, the

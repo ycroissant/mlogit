@@ -163,7 +163,7 @@ distribution:
   negative values are expected, one should consider the distribution
   of the opposite of the random price coefficient. This can easily be
   done using the `opposite` argument of `dfidx`.^[See vignette
-  [formula/data](./c2.formula.data.pdf).],
+  [formula/data](./c2.formula.data.html).],
 - the use of unbounded distributions often leads to implausible
   values of some statistics of the random parameters, especially the
   mean. This is particularly the case of the log-normal distribution,
@@ -490,10 +490,14 @@ The results are presented in @tbl-risktr.
 
 
 ```{r}
-#| label: tbl-risktr
-#| tbl-cap: "Transportation choices."
+#| label: risktr
 #| echo: false
-modelsummary::msummary(list('Multinomial logit' = ml.rt, 'Mixed logit' = mx.rt))
+models <- list('Multinomial logit' = ml.rt,
+               'Mixed logit' = mx.rt)
+trms <- unique(Reduce("c", lapply(models, function(x) names(coef(x)))))
+z <- Reduce("cbind", lapply(models, function(x) coef(x)[trms]))
+dimnames(z) <- list(trms, names(models))
+print(z, digits = 3, na.print = "-")
 ``` 
 
 Not that the log-likelihood is much larger for the mixed effect logit.

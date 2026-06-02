@@ -122,8 +122,6 @@ the utility.
   P_l=\frac{e^{V_l}}{\sum_{j=1}^J e^{V_j}}.
 \end{equation*}
 
-
-
 ## IIA property
 
 If we consider the probabilities of choice for two alternatives $l$
@@ -534,18 +532,31 @@ ml.pool <- mlogit(choice ~ post + cm + lnb + vcost + kcost +
                   subset = available == 1, data = NOxml,
                   method = "bhhh")
 ``` 
+Results are presented below:
 
 ```{r}
-#| label: tbl-models
+#| label: models
 #| echo: false
-#| tbl-cap: "Environmental compliance choices."
+models <- list(Public = ml.pub,
+     Deregulated = ml.dereg,
+     Reguated = ml.reg,
+     Pooled = ml.pool)
+trms <- unique(Reduce("c", lapply(models, function(x) names(coef(x)))))
+z <- Reduce("cbind", lapply(models, function(x) coef(x)[trms]))
+dimnames(z) <- list(trms, names(models))
+print(z, digits = 3, na.print = "-")
+``` 
+
 modelsummary::msummary(list(Public = ml.pub,
                             Deregulated = ml.dereg,
                             Reguated = ml.reg,
-                            Pooled = ml.pool))
+                            Pooled = ml.pool),
+                       output = "_.txt")
+writeLines(readLines("_.txt"))
 ``` 
 
-Results are presented in @tbl-models. Coefficients are very different
+<!-- Results are presented in @tbl-models. -->
+Coefficients are very different
 on the sub-samples defined by the regulatory environment. Note in
 particular that the capital cost coefficient is positive and
 insignificant for public and regulated firms, as it is significantly
@@ -565,6 +576,50 @@ pchisq(stat, df = 9, lower.tail = FALSE)
 ``` 
 
 The hypothesis is strongly rejected. 
+
+### Predictions and marginal effects
+
+Since version `2.0-0`, **mlogit** provides a `preds` and a `slps`
+function to, respectively, compute the predictions and the slopes for
+every observations, along with their standard deviations. 
+Since the computation is time-consuming, we first fit again a
+transport choice model, but on a small subset of the `ModeCanada` data
+set:
+
+
+```{r }
+ids <- unique(ModeCanada$case)
+set.seed(1L)
+ids <- sample(ids, 50)
+smallMC <- subset(ModeCanada, case %in% ids)
+ml <- mlogit(choice ~ cost | income, smallMC, alt.subset = c("car", "train", "air"))
+```
+
+We then compute the predictions and the slopes:
+
+```{r }
+.p <- preds(ml)
+.s <- slps(ml)
+.p
+head(.s)
+```
+
+Both functions return a data frame with an `"estimate"` and a
+`"std.error"` columns. The object returned by `predicts` is a `dfidx`
+object and has the same number of rows than the model frame of the
+fitted model. The object returned by `slps` is not a `dfidx` because
+it contains, for each combinations of the two indexes, not one line
+but a number of line equal to the number of effects (3 in the
+example). Both functions have a summary method which computes, for the
+`slps` function, the average marginal effects:
+
+```{r }
+summary(.p)
+summary(.s)
+```
+
+
+
 
 ## Bibliography
 

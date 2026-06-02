@@ -217,6 +217,7 @@ pred_coefs <- function(coefs, model, data = NULL){
             class(data) <- setdiff(class(data), "dfidx_mlogit")
         }
         preds <- update(model, param = coefs, data = data)
+
     }
     as.numeric(t(preds))
     ## preds %>% 
@@ -234,8 +235,8 @@ slope_coefs <- function(coefs, model, covar, alt = NULL, eps = NULL){
     dta <- model.frame(model)
     probs_init <- pred_coefs(coefs, model, dta)
     id <- idx(model, 2, 1)
-    if (is.null(eps))  eps <- sd(dta[[covar]]) * sqrt(.Machine$double.eps)
-        dta2 <- dta
+    if (is.null(eps))  eps <- sd(dta[[covar]], na.rm = TRUE) * sqrt(.Machine$double.eps)
+    dta2 <- dta
     if (! is.null(alt)){
         dta2[[covar]] <- dta2[[covar]] + eps * (id == alt)
     } else {
@@ -357,31 +358,20 @@ slps <- function(object){
 
 #' @rdname slps
 #' @method summary slps
+#' @importFrom stats aggregate
 #' @export
 summary.slps <- function(object, ...){
-    ## summarise(object,
+    ## dplyr::summarise(object,
     ##           estimate = mean(estimate),
     ##           std.error = sqrt(sum(std.error ^ 2) / nrow(object)),
     ##           statistic = estimate / std.error,
     ##           p.value = 2 * pnorm(abs(statistic), lower.tail = FALSE),
-    ##           .by = c(term, alt))
+    ##           .by = c(term, alt)) %>% print()
+    .est <- aggregate(estimate ~ term + alt, object, mean)
+    .sd <- aggregate(std.error ~ term + alt, object, function(x) sqrt(sum(x ^ 2) / nrow(object)))
+    result <- merge(.est, .sd, by = c("term", "alt"))
+    result <- result[order(result$term, result$alt), ]
     is.tibble <- inherits(object, "tbl_df")
-    z <- tapply(object$estimate, list(object$term, object$alt), mean)
-    z <- as.data.frame(z)
-    names(z) <- paste("alt", names(z), sep = ".")
-    z$term <- rownames(z)
-    z <- reshape(z, varying = 1:4, direction = "long")[, 1:3]
-    names(z) <- c("term", "alt", "estimate")
-    rownames(z) <- NULL
-    s <- tapply(object$std.error, list(object$term, object$alt),
-                function(x) sqrt(sum(x ^ 2) / nrow(object)))
-    s <- as.data.frame(s)
-    names(s) <- paste("alt", names(s), sep = ".")
-    s$term <- rownames(s)
-    s <- reshape(s, varying = 1:4, direction = "long")[, 1:3]
-    names(s) <- c("term", "alt", "std.error")
-    rownames(s) <- NULL
-    result <- merge(z, s)
     result$statistic <- result$estimate / result$std.error
     result$p.value <- 2 * pnorm(abs(result$statistic), lower.tail = FALSE)
     if (is.tibble){

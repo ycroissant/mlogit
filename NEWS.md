@@ -1,5 +1,10 @@
 # mlogit 2.0-0
 
+* the msumarry tables are rendered in markdown
+
+* functions preds and slps are introduced to compute the predictions,
+  the slopes and their standard deviations
+
 * micsr::gaze is now re-exported
 
 * a new param argument is introduced for mlogit; it should be a vector

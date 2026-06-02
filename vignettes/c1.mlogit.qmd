@@ -85,18 +85,18 @@ additions to **mlogit**:
   **bayesm**, **MNP** and **RSGHB** packages.
 
 The article is organized as follow. Vignette
-[formula/data](./c2.formula.data.pdf) explains how the usual
+[formula/data](./c2.formula.data.html) explains how the usual
 formula-data interface can be extended in order to
 describe in a very natural way the model to be estimated. Vignette
-[random utility models](./c3.rum.pdf) describes the landmark
+[random utility models](./c3.rum.html) describes the landmark
 multinomial logit model. Vignette [relaxing the iid
-hypothesis](./c4.relaxiid.psf), [mixed logit model](./c5.mxl.pdf) and
-[multinomial probit model](./c6.mprobit.pdf) present three important
+hypothesis](./c4.relaxiid.html), [mixed logit model](./c5.mxl.html) and
+[multinomial probit model](./c6.mprobit.html) present three important
 extensions of this basic model: Vignette [relaxing the iid
-hypothesis](./c4.relaxiid.pdf) presents models that relax the iid
-Gumbel hypothesis, [mixed logit model](./c5.mxl.pdf) introduces slope
+hypothesis](./c4.relaxiid.html) presents models that relax the iid
+Gumbel hypothesis, [mixed logit model](./c5.mxl.html) introduces slope
 heterogeneity by considering some parameters as random and
-[multinomial probit model](./c6.mprobit.pdf) relaxes the Gumbel
+[multinomial probit model](./c6.mprobit.html) relaxes the Gumbel
 distribution hypothesis by assuming a multivariate normal
 distribution.
 

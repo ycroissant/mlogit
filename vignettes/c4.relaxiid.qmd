@@ -13,7 +13,7 @@ vignette: >
 
 ```{r }
 #| echo: false
-oopts <-options(width = 70)
+oopts <-options(width = 80)
 ```
 
 In the previous section, we assumed that the error terms were iid
@@ -363,17 +363,22 @@ nl2.fdi <- update(nl.fdi, un.nest.el = FALSE,
                   constPar = c('iv:PT' = 1, 'iv:IE' = 1))
 ``` 
 
-The results of the fitted models are presented in @tbl-nlogit.
+<!-- The results of the fitted models are presented in @tbl-nlogit. -->
+
+Results are presented below:
 
 ```{r}
-#| label: tbl-nlogit
-#| tbl-cap: "Choice by Japanese firms of a european region."
+#| label: nlogit
 #| echo: false
-modelsummary::msummary(list('Mult. logit' = ml.fdi,
-                            'Upper model' = um.fdi,
-                            'Upper model' = um2.fdi,
-                            'Nested logit' = nl.fdi,
-                            'Nested logit' = nl2.fdi))
+models <- list('Mult. logit' = ml.fdi,
+               'Upper model' = um.fdi,
+               'Upper model' = um2.fdi,
+               'Nested logit' = nl.fdi,
+               'Nested logit' = nl2.fdi)
+trms <- unique(Reduce("c", lapply(models, function(x) names(coef(x)))))
+z <- Reduce("cbind", lapply(models, function(x) coef(x)[trms]))
+dimnames(z) <- list(trms, names(models))
+print(z, digits = 3, na.print = "-")
 ``` 
 
 For the nested logit models, two tests are of particular interest:
@@ -382,7 +387,7 @@ For the nested logit models, two tests are of particular interest:
   are equal to 1,
 - the test of unique nest elasticities, which means that all the
   nest elasticities are equal to each other.
-
+y.paras
 For the test of no nests, the nested model is provided as the unique
 argument for the `lrtest` and the `waldtest` function. For the
 `scoretest`, the constrained model (i.e., the multinomial logit model)
